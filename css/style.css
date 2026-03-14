@@ -538,6 +538,10 @@ section {
     align-items: center;
 }
 
+.mobile-nav-wrapper, .mobile-dropdown-trigger, .mobile-dropdown-menu {
+    display: none;
+}
+
 .nav-main-links a {
     font-weight: 600;
     font-size: 0.9rem;
@@ -773,6 +777,10 @@ section {
 
     .nav-main-links {
         display: none !important;
+    }
+
+    .mobile-nav-wrapper {
+        display: block !important;
     }
 
     /* Professional Dropdown Button */
