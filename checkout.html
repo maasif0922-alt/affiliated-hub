@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | AffiliateHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+            padding: 4rem 0;
+        }
+        .checkout-step {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-family: 'Outfit';
+        }
+        .cart-summary {
+            background: #f8fafc;
+            padding: 2.5rem;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 100px;
+        }
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+        }
+        @media (max-width: 992px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+
+    <main class="container">
+        <header style="margin-top: 4rem;">
+            <h1 style="font-family: 'Outfit'; font-weight: 800; font-size: 2.5rem;">Secure Checkout</h1>
+            <p style="color: var(--text-muted)">Please review your items and choose a shipping destination.</p>
+        </header>
+
+        <div id="empty-cart" style="display: none; text-align: center; padding: 10rem 0;">
+            <i data-lucide="shopping-bag" style="width: 64px; height: 64px; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+            <h3>Your cart is empty</h3>
+            <a href="dropshipping.html" class="btn btn-primary mt-4">Browse Store</a>
+        </div>
+
+        <div class="checkout-grid" id="checkout-container">
+            <div class="checkout-form">
+                <div class="checkout-step animate-fade-in">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h2 style="font-family: 'Outfit'; font-weight: 700;">Shipping Information</h2>
+                    </div>
+                    <form id="shipping-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Full Name</label>
+                            <input type="text" id="cust-name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="cust-email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="cust-phone" placeholder="+1 (555) 000-0000" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Shipping Address</label>
+                            <input type="text" id="cust-address" placeholder="123 Street Name, Apartment 4B" required>
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="cust-city" placeholder="New York" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Postal Code</label>
+                            <input type="text" id="cust-zip" placeholder="10001" required>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="checkout-step animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h2 style="font-family: 'Outfit'; font-weight: 700;">Payment Method</h2>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                        <i data-lucide="truck" style="color: var(--primary-color)"></i>
+                        <div>
+                            <p style="font-weight: 700; margin: 0;">Cash on Delivery (COD)</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Pay securely when your package arrives at your door.</p>
+                        </div>
+                    </div>
+                    <button type="submit" form="shipping-form" class="btn btn-primary" style="width: 100%; font-size: 1.125rem; padding: 1.25rem;">
+                        Complete Order
+                    </button>
+                    <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+                        <i data-lucide="lock" style="width: 12px; vertical-align: middle;"></i> Secure Encrypted Transaction
+                    </p>
+                </div>
+            </div>
+
+            <aside class="cart-summary animate-fade-in" style="animation-delay: 0.2s;">
+                <h3 style="font-family: 'Outfit'; font-weight: 700; margin-bottom: 2rem;">Order Summary</h3>
+                <div id="cart-items-list">
+                    <!-- Items injected here -->
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; color: var(--text-muted);">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">$0.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; color: var(--text-muted);">
+                        <span>Shipping</span>
+                        <span style="color: #22c55e; font-weight: 700;">FREE</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span id="summary-total">$0.00</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrderSummary();
+            setupOrderHandler();
+        });
+
+        function renderOrderSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const container = document.getElementById('checkout-container');
+            const empty = document.getElementById('empty-cart');
+            const list = document.getElementById('cart-items-list');
+
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            let subtotal = 0;
+            list.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemTotal = parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.quantity;
+                subtotal += itemTotal;
+
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div style="flex: 1;">
+                        <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${item.title}</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0;">Qty: ${item.quantity}</p>
+                    </div>
+                    <div style="font-weight: 700;">${item.price}</div>
+                `;
+                list.appendChild(div);
+            });
+
+            const formattedSubtotal = '$' + subtotal.toFixed(2);
+            document.getElementById('summary-subtotal').innerText = formattedSubtotal;
+            document.getElementById('summary-total').innerText = formattedSubtotal;
+        }
+
+        function setupOrderHandler() {
+            document.getElementById('shipping-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const orderData = {
+                    customer: {
+                        name: document.getElementById('cust-name').value,
+                        email: document.getElementById('cust-email').value,
+                        phone: document.getElementById('cust-phone').value,
+                        address: document.getElementById('cust-address').value,
+                        city: document.getElementById('cust-city').value,
+                        zip: document.getElementById('cust-zip').value
+                    },
+                    items: cart,
+                    total: document.getElementById('summary-total').innerText
+                };
+
+                const orderId = submitOrder(orderData);
+                
+                // Show Success State
+                document.body.innerHTML = `
+                    <div style="height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: #f8fafc;">
+                        <div style="background: white; padding: 4rem; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); max-width: 500px;">
+                            <div style="background: #f0fdf4; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                                <i data-lucide="check-circle" style="width: 48px; height: 48px; color: #22c55e;"></i>
+                            </div>
+                            <h1 style="font-family: 'Outfit'; font-weight: 800; margin-bottom: 1rem;">Order Successful!</h1>
+                            <p style="color: var(--text-muted); margin-bottom: 2rem;">Your order <strong>${orderId}</strong> has been placed. We will contact you shortly for delivery.</p>
+                            <a href="index.html" class="btn btn-primary" style="width: 100%;">Return to Home</a>
+                        </div>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
+            });
+        }
+    </script>
+</body>
+</html>

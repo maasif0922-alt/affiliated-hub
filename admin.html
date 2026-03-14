@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Admin Suite | AffiliateHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #0f172a;
+            color: white;
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-nav {
+            margin-top: 3rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1.25rem;
+            border-radius: var(--radius-md);
+            color: #94a3b8;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .main-content {
+            padding: 2.5rem 4rem;
+            background: #f8fafc;
+            overflow-y: auto;
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.75rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h3 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* UI Blocks */
+        .admin-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .admin-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Controls Upgrade */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #334155;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            outline: none;
+            font-size: 0.9375rem;
+            background: #fcfcfc;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Platform Grid for Selection */
+        .platform-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-option {
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .platform-option.selected {
+            border-color: var(--primary-color);
+            background: #f5f3ff;
+        }
+
+        .platform-option i {
+            display: block;
+            margin-bottom: 0.5rem;
+            margin: 0 auto 0.5rem;
+        }
+
+        /* Data Table Upgrade */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9375rem;
+        }
+
+        .data-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-icon-danger:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body style="background: white;">
+
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo" style="color: white; font-size: 1.5rem; margin-bottom: 1rem;">
+                <span class="logo-accent">Affiliate</span>Hub
+            </div>
+            <p style="color: #475569; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Management Suite</p>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                <ul>
+                    <li><a onclick="showTab('overview')" id="tab-overview" class="active"><i data-lucide="layout-grid"></i> Overview</a></li>
+                    <li><a onclick="showTab('amazon')" id="tab-amazon"><i data-lucide="shopping-cart"></i> Amazon Manager</a></li>
+                    <li><a onclick="showTab('aliexpress')" id="tab-aliexpress"><i data-lucide="globe"></i> AliExpress Manager</a></li>
+                    <li><a onclick="showTab('fiverr')" id="tab-fiverr"><i data-lucide="briefcase"></i> Fiverr Manager</a></li>
+                    <li><a onclick="showTab('direct')" id="tab-direct" style="color: var(--primary-color)"><i data-lucide="store"></i> Direct Store</a></li>
+                    <li><a onclick="showTab('orders')" id="tab-orders"><i data-lucide="package"></i> Store Orders</a></li>
+                    <li><a onclick="showTab('categories')" id="tab-categories"><i data-lucide="tags"></i> Categories</a></li>
+                    <li><a onclick="showTab('settings')" id="tab-settings"><i data-lucide="settings"></i> Site Settings</a></li>
+                    <li style="margin-top: 2rem;"><a onclick="logout()"><i data-lucide="log-out"></i> Logout</a></li>
+                </ul>
+                    <li style="margin-top: 2rem;"><a onclick="logout()"><i data-lucide="log-out"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- TAB: OVERVIEW -->
+            <div id="content-overview" class="admin-tab-content active animate-fade-in">
+                <header style="margin-bottom: 3rem;">
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Dashboard Overview</h1>
+                    <p style="color: var(--text-muted);">Monitor your clicks and affiliate performance</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Link Clicks</h3>
+                        <div class="value" id="total-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Inventory Size</h3>
+                        <div class="value" id="inv-size">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Top Platform</h3>
+                        <div class="value" id="top-platform">N/A</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Conversion Rank</h3>
+                        <div class="value">A+</div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h2 style="font-size: 1.25rem; font-weight: 700;">Recent Click Activity</h2>
+                        <button class="btn btn-outline btn-sm" onclick="clearStats()">Reset Data</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Platform</th>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="click-history-table">
+                            <!-- History injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: AMAZON -->
+            <div id="content-amazon" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Amazon Inventory</h1>
+                        <p style="color: var(--text-muted);">Manage your Amazon Affiliate products</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddModal('amazon')">
+                        <i data-lucide="plus"></i> New Amazon Product
+                    </button>
+                </header>
+                <div class="admin-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Clicks</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amazon-product-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: ALIEXPRESS -->
+            <div id="content-aliexpress" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">AliExpress Inventory</h1>
+                        <p style="color: var(--text-muted);">Manage your AliExpress Affiliate products</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddModal('aliexpress')">
+                        <i data-lucide="plus"></i> New AliExpress Product
+                    </button>
+                </header>
+                <div class="admin-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Clicks</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aliexpress-product-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: FIVERR -->
+            <div id="content-fiverr" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Fiverr Services</h1>
+                        <p style="color: var(--text-muted);">Manage your Fiverr Affiliate gigs</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddModal('fiverr')">
+                        <i data-lucide="plus"></i> New Fiverr Gig
+                    </button>
+                </header>
+                <div class="admin-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Service/Gig</th>
+                                <th>Category</th>
+                                <th>Starting Price</th>
+                                <th>Clicks</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fiverr-product-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SHARED ADD MODAL (Hidden by default) -->
+            <div id="add-modal" class="admin-card animate-fade-in" style="display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 800px; z-index: 1000; box-shadow: 0 0 100px rgba(0,0,0,0.5);">
+                <div class="admin-card-header">
+                    <h2 id="modal-title" style="font-size: 1.5rem; font-weight: 800;">Upload New Offering</h2>
+                    <button class="btn-icon" onclick="closeAddModal()"><i data-lucide="x"></i></button>
+                </div>
+                <form id="shared-product-form">
+                    <input type="hidden" id="p-platform">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <div class="form-group">
+                                <label>Professional Title</label>
+                                <input type="text" id="p-title" placeholder="e.g. Sony WH-1000XM5 Edition" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Product Images (Upload 5+)</label>
+                                <div id="image-upload-area" style="border: 2px dashed #e2e8f0; padding: 1.5rem; border-radius: var(--radius-md); text-align: center; cursor: pointer; transition: all 0.2s ease;">
+                                    <i data-lucide="upload-cloud" style="margin: 0 auto 0.5rem; color: #94a3b8;"></i>
+                                    <p style="font-size: 0.875rem; color: #64748b;">Click or Drag to Upload Images</p>
+                                    <input type="file" id="p-image-files" multiple accept="image/*" style="display: none;">
+                                </div>
+                                <div id="image-preview-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1rem;"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Or External Image URL (Optional)</label>
+                                <input type="url" id="p-image-url" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label>Category Assignment</label>
+                                <select id="p-cat-select"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Destination Link (Affiliate)</label>
+                                <input type="url" id="p-link" placeholder="Your tracked URL" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Display Price</label>
+                                <input type="text" id="p-price" placeholder="e.g. $299.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Featured Visibility</label>
+                                <select id="p-featured">
+                                    <option value="false">Standard Listing</option>
+                                    <option value="true">Featured Home Section</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Deploy to Website</button>
+                </form>
+            </div>
+            <div id="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;" onclick="closeAddModal()"></div>
+
+            <!-- TAB: DIRECT STORE (DROPSHIPPING) -->
+            <div id="content-direct" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--primary-color);">Direct Store Inventory</h1>
+                        <p style="color: var(--text-muted);">Manage products sold directly through your dropshipping section</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddModal('direct')">
+                        <i data-lucide="plus"></i> New Direct Product
+                    </button>
+                </header>
+                <div class="admin-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Clicks</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="direct-product-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: STORE ORDERS -->
+            <div id="content-orders" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem;">
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Incoming Orders</h1>
+                    <p style="color: var(--text-muted);">Track and fulfill purchases from your Direct Store</p>
+                </header>
+                <div class="admin-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Timestamp</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-list"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="content-categories" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem;">
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Category Management</h1>
+                    <p style="color: var(--text-muted);">Organize your products and services into logical groups</p>
+                </header>
+
+                <div class="stats-grid" style="grid-template-columns: 1fr;">
+                    <div class="stat-card">
+                        <h3>Active Categories</h3>
+                        <div class="value" id="cat-count">0</div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem">Manage Category List</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Operations</th>
+                            </tr>
+                        </thead>
+                        <tbody id="category-list">
+                            <!-- Categories injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-card">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.5rem">Create New Category</h2>
+                    <form id="category-form">
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input type="text" id="cat-name" placeholder="e.g. PC Gaming" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Add Category to Database</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB: SETTINGS -->
+            <div id="content-settings" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem;">
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Website Global Configuration</h1>
+                    <p style="color: var(--text-muted);">Manage your branding, hero section, and themes</p>
+                </header>
+
+                <div class="admin-card">
+                    <form id="settings-form">
+                        <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Identity & Branding</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div class="form-group">
+                                <label>Logo Primary Text</label>
+                                <input type="text" id="s-logo-main">
+                            </div>
+                            <div class="form-group">
+                                <label>Logo Accent Text</label>
+                                <input type="text" id="s-logo-accent">
+                            </div>
+                        </div>
+
+                        <h3 style="margin: 2rem 0 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Hero Section Appearance</h3>
+                        <div class="form-group">
+                            <label>Hero Welcome Title</label>
+                            <input type="text" id="s-hero-title">
+                        </div>
+                        <div class="form-group">
+                            <label>Hero Subtitle / Description</label>
+                            <textarea id="s-hero-desc" rows="3"></textarea>
+                        </div>
+
+                        <h3 style="margin: 2rem 0 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Design System</h3>
+                        <div class="form-group">
+                            <label>Brand Primary Color</label>
+                            <input type="color" id="s-color" style="height: 50px; padding: 5px;">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">Save All Changes</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Auth Guard
+        if (sessionStorage.getItem('admin_auth') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshData();
+            refreshCategories();
+            loadSettingsIntoForm();
+            setupFormHandlers();
+        });
+
+        function showTab(id) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`content-${id}`).classList.add('active');
+            document.getElementById(`tab-${id}`).classList.add('active');
+            
+            if (id === 'overview') refreshData();
+            if (['amazon', 'aliexpress', 'fiverr', 'direct'].includes(id)) renderPlatformList(id);
+            if (id === 'orders') renderOrderList();
+            if (id === 'categories') refreshCategories();
+        }
+
+        function refreshCategories() {
+            const categories = JSON.parse(localStorage.getItem('categories') || '["Electronics", "Smart Home", "Digital Services", "Logo Design", "SEO", "Video Editing"]');
+            if (!localStorage.getItem('categories')) {
+                localStorage.setItem('categories', JSON.stringify(categories));
+            }
+
+            document.getElementById('cat-count').innerText = categories.length;
+            
+            const list = document.getElementById('category-list');
+            list.innerHTML = '';
+            categories.forEach(cat => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600">${cat}</td>
+                    <td>
+                        <button class="btn-icon btn-icon-danger" onclick="deleteCategory('${cat}')"><i data-lucide="trash-2" style="width: 16px;"></i></button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+
+            // Update product form select
+            const select = document.getElementById('p-cat-select');
+            select.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.innerText = cat;
+                select.appendChild(opt);
+            });
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function deleteCategory(cat) {
+            if (!confirm(`Remove category "${cat}"? Products already assigned will remain in this category unless updated.`)) return;
+            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            localStorage.setItem('categories', JSON.stringify(categories.filter(c => c !== cat)));
+            refreshCategories();
+        }
+
+        function renderPlatformList(platform) {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const stats = JSON.parse(localStorage.getItem('click_stats') || '{}');
+            const filtered = products.filter(p => p.platform === platform);
+            
+            const list = document.getElementById(`${platform}-product-list`);
+            list.innerHTML = '';
+            
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items:center; gap: 1rem;">
+                            <img src="${p.image}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+                            <span style="font-weight: 600">${p.title}</span>
+                        </div>
+                    </td>
+                    <td><span class="platform-badge" style="background: #e2e8f0; color: #475569;">${p.category || 'General'}</span></td>
+                    <td style="font-weight: 700; color: var(--primary-color)">${p.price}</td>
+                    <td>${stats[p.id] || 0}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-icon btn-icon-danger" onclick="deleteProduct('${p.id}', '${platform}')"><i data-lucide="trash-2" style="width: 16px;"></i></button>
+                        </div>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function refreshData() {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const stats = JSON.parse(localStorage.getItem('click_stats') || '{}');
+            const history = JSON.parse(localStorage.getItem('click_history') || '[]');
+
+            // Stats
+            document.getElementById('total-clicks').innerText = Object.values(stats).reduce((a, b) => a + b, 0);
+            document.getElementById('inv-size').innerText = products.length;
+            
+            // Render Recent History
+            const hTable = document.getElementById('click-history-table');
+            hTable.innerHTML = '';
+            history.reverse().slice(0, 10).forEach(h => {
+                const p = products.find(prod => prod.id === h.id) || { title: 'Unknown Product', platform: 'N/A' };
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.title}</td>
+                    <td><span class="platform-badge badge-${p.platform}">${p.platform}</span></td>
+                    <td style="color: #64748b">${new Date(h.timestamp).toLocaleString()}</td>
+                    <td><a href="${h.url}" target="_blank" class="btn-icon"><i data-lucide="external-link" style="width: 14px;"></i></a></td>
+                `;
+                hTable.appendChild(tr);
+            });
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function renderOrderList() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const list = document.getElementById('order-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            orders.reverse().forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 700;">${o.id}</td>
+                    <td>
+                        <div style="font-weight: 600;">${o.customer.name}</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">${o.customer.city}</div>
+                    </td>
+                    <td style="font-weight: 700; color: var(--primary-color)">${o.total}</td>
+                    <td><span class="platform-badge" style="background: #fef9c3; color: #854d0e;">${o.status}</span></td>
+                    <td style="color: #64748b; font-size: 0.85rem;">${new Date(o.timestamp).toLocaleString()}</td>
+                    <td>
+                        <button class="btn-icon" onclick="viewOrder('${o.id}')" title="View Details"><i data-lucide="eye" style="width: 16px;"></i></button>
+                        <button class="btn-icon btn-icon-danger" onclick="deleteOrder('${o.id}')" title="Cancel Order"><i data-lucide="x" style="width: 16px;"></i></button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function deleteOrder(id) {
+            if (!confirm(`Cancel and remove order ${id}?`)) return;
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            localStorage.setItem('orders', JSON.stringify(orders.filter(o => o.id !== id)));
+            renderOrderList();
+        }
+
+        function viewOrder(id) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const o = orders.find(ord => ord.id === id);
+            if (!o) return;
+            alert(`Order Details for ${id}:\n\nCustomer: ${o.customer.name}\nEmail: ${o.customer.email}\nPhone: ${o.customer.phone}\nAddress: ${o.customer.address}, ${o.customer.city}\n\nItems: ${o.items.map(i => i.title + ' (x' + i.quantity + ')').join(', ')}\n\nTotal: ${o.total}`);
+        }
+
+        function loadSettingsIntoForm() {
+            const s = JSON.parse(localStorage.getItem('site_settings') || '{}');
+            document.getElementById('s-logo-main').value = s.logoText || 'Affiliate';
+            document.getElementById('s-logo-accent').value = s.logoAccent || 'Hub';
+            document.getElementById('s-hero-title').value = s.heroTitle || '';
+            document.getElementById('s-hero-desc').value = s.heroDesc || '';
+            document.getElementById('s-color').value = s.primaryColor || '#6366f1';
+        }
+
+        let currentUploadedImages = [];
+
+        document.getElementById('image-upload-area').onclick = () => document.getElementById('p-image-files').click();
+        
+        document.getElementById('p-image-files').onchange = async (e) => {
+            const files = Array.from(e.target.files);
+            const previewGrid = document.getElementById('image-preview-grid');
+            
+            for (const file of files) {
+                if (currentUploadedImages.length >= 10) break; // Limit to 10
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const base64 = event.target.result;
+                    currentUploadedImages.push(base64);
+                    
+                    const div = document.createElement('div');
+                    div.style.position = 'relative';
+                    div.innerHTML = `
+                        <img src="${base64}" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                        <button type="button" onclick="removePreviewImage(this, '${base64}')" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;">&times;</button>
+                    `;
+                    previewGrid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function removePreviewImage(btn, base64) {
+            btn.parentElement.remove();
+            currentUploadedImages = currentUploadedImages.filter(img => img !== base64);
+        }
+
+        function openAddModal(platform) {
+            currentUploadedImages = [];
+            document.getElementById('image-preview-grid').innerHTML = '';
+            document.getElementById('shared-product-form').reset();
+            document.getElementById('p-platform').value = platform;
+            document.getElementById('modal-title').innerText = `Add New ${platform.toUpperCase()} Listing`;
+            document.getElementById('add-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('shared-product-form').reset();
+            currentUploadedImages = [];
+            document.getElementById('image-preview-grid').innerHTML = '';
+        }
+
+        function setupFormHandlers() {
+            // Settings Form
+            document.getElementById('settings-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const updated = {
+                    logoText: document.getElementById('s-logo-main').value,
+                    logoAccent: document.getElementById('s-logo-accent').value,
+                    heroTitle: document.getElementById('s-hero-title').value,
+                    heroDesc: document.getElementById('s-hero-desc').value,
+                    primaryColor: document.getElementById('s-color').value,
+                };
+                localStorage.setItem('site_settings', JSON.stringify(updated));
+                applySiteSettings();
+                alert('Website configuration updated successfully!');
+            });
+
+            // Shared Product Form
+            document.getElementById('shared-product-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const platform = document.getElementById('p-platform').value;
+                const externalUrl = document.getElementById('p-image-url').value;
+                
+                // Final image array combines uploaded and external
+                const finalImages = [...currentUploadedImages];
+                if (externalUrl) finalImages.unshift(externalUrl);
+
+                if (finalImages.length === 0) {
+                    alert('Please upload at least one image or provide a URL.');
+                    return;
+                }
+
+                const newP = {
+                    id: 'p-' + Date.now(),
+                    title: document.getElementById('p-title').value,
+                    images: finalImages,
+                    image: finalImages[0], // Main image for backward compatibility
+                    link: document.getElementById('p-link').value,
+                    platform: platform,
+                    price: document.getElementById('p-price').value,
+                    category: document.getElementById('p-cat-select').value,
+                    featured: document.getElementById('p-featured').value === 'true',
+                    rating: 5.0,
+                    deal: false
+                };
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                products.push(newP);
+                localStorage.setItem('products', JSON.stringify(products));
+                renderPlatformList(platform);
+                closeAddModal();
+                alert(`${platform.toUpperCase()} product deployed with ${finalImages.length} images!`);
+            });
+
+            // Category Form
+            document.getElementById('category-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('cat-name').value;
+                const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+                if (categories.includes(name)) {
+                    alert('Category already exists!');
+                    return;
+                }
+                categories.push(name);
+                localStorage.setItem('categories', JSON.stringify(categories));
+                refreshCategories();
+                e.target.reset();
+                alert('New category added!');
+            });
+        }
+
+        function deleteProduct(id, platform) {
+            if (!confirm('Are you sure? This will instantly remove the product from all site sections.')) return;
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)));
+            renderPlatformList(platform);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin_auth');
+            window.location.href = 'index.html';
+        }
+
+        function clearStats() {
+            if (!confirm('Clear all click analytics storage?')) return;
+            localStorage.setItem('click_stats', '{}');
+            localStorage.setItem('click_history', '[]');
+            refreshData();
+        }
+    </script>
+</body>
+</html>

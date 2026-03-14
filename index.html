@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AffiliateHub | Best Deals from Amazon, AliExpress & Fiverr</title>
+    <meta name="description" content="Discover the best deals and top-rated services from Amazon, AliExpress, and Fiverr. Earn more with our curated recommendations.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Homepage Specific Adjustments */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            padding: 8rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text; /* Standard property */
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Platform Section Badges */
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-amazon { background: #fee2e2; color: #dc2626; }
+        .badge-aliexpress { background: #ffedd5; color: #ea580c; }
+        .badge-fiverr { background: #dcfce7; color: #16a34a; }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--bg-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2; /* Standard property */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .category-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+            scrollbar-width: none;
+        }
+
+        .category-chip {
+            padding: 0.5rem 1.25rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .category-chip.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Hero Floating Objects */
+        .hero-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(40px);
+        }
+        .blob-1 { top: -100px; right: -100px; animation: float 8s infinite; }
+        .blob-2 { bottom: -100px; left: -100px; animation: float 10s infinite reverse; }
+    </style>
+</head>
+<body>
+
+    <nav id="main-nav"></nav>
+
+    <header class="hero">
+        <div class="hero-blob blob-1"></div>
+        <div class="hero-blob blob-2"></div>
+        <div class="container hero-content">
+            <div class="live-indicator animate-fade-in" style="justify-content: center; margin-bottom: 2rem;">
+                <div class="live-dot"></div>
+                <span>Exclusive Drops & Premium Deals</span>
+            </div>
+            <h1 class="animate-fade-in" style="animation-delay: 0.2s;">Premium Affiliate <br>& Dropshipping Hub</h1>
+            <p class="animate-fade-in" style="max-width: 700px; margin: 0 auto 3rem; animation-delay: 0.4s;">
+                Experience a hand-picked selection of elite products from Amazon, AliExpress, and our own Direct Store. Quality verified, curated for excellence.
+            </p>
+            <div class="hero-btns animate-fade-in" style="animation-delay: 0.6s;">
+                <a href="admin.html" class="btn btn-primary pulse-glow" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">
+                    <i data-lucide="user-plus"></i> Create Account
+                </a>
+                <a href="dropshipping.html" class="btn btn-outline" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">
+                    <i data-lucide="shopping-bag"></i> Direct Store
+                </a>
+            </div>
+
+            <div class="trust-badges animate-fade-in" style="animation-delay: 0.8s;">
+                <div class="trust-item"><i data-lucide="shield-check"></i> Secure Checkout</div>
+                <div class="trust-item"><i data-lucide="truck"></i> Fast Global Shipping</div>
+                <div class="trust-item"><i data-lucide="award"></i> Verified Product Quality</div>
+                <div class="trust-item"><i data-lucide="refresh-cw"></i> 30-Day Easy Returns</div>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="category-scroll">
+            <button class="category-chip active">All</button>
+            <button class="category-chip">Electronics</button>
+            <button class="category-chip">Smart Home</button>
+            <button class="category-chip">Digital Marketing</button>
+            <button class="category-chip">Logo Design</button>
+            <button class="category-chip">Gadgets</button>
+            <button class="category-chip">Video Editing</button>
+        </div>
+    </section>
+
+    <section id="featured" class="reveal-on-scroll">
+        <div class="container">
+            <h2 class="section-title"><i data-lucide="zap"></i> Featured Products</h2>
+            <div class="product-grid" id="featured-products">
+                <!-- Products will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <section id="trending" class="reveal-on-scroll" style="background-color: #fff;">
+        <div class="container">
+            <h2 class="section-title"><i data-lucide="trending-up"></i> Trending Deals</h2>
+            <div class="product-grid" id="trending-products">
+                <!-- Trending products will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <section id="fiverr" class="reveal-on-scroll">
+        <div class="container">
+            <h2 class="section-title"><i data-lucide="award"></i> Top Fiverr Services</h2>
+            <div class="product-grid" id="fiverr-services">
+                <!-- Fiverr gigs will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <footer></footer>
+
+    <!-- Main Logic -->
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHomepageProducts();
+        });
+
+        function renderHomepageProducts() {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            
+            const featuredGrid = document.getElementById('featured-products');
+            const trendingGrid = document.getElementById('trending-products');
+            const fiverrGrid = document.getElementById('fiverr-services');
+            
+            products.forEach(p => {
+                const card = createProductCard(p);
+                if (p.featured) featuredGrid.appendChild(card.cloneNode(true));
+                if (p.deal) trendingGrid.appendChild(card.cloneNode(true));
+                if (p.platform === 'fiverr') fiverrGrid.appendChild(card.cloneNode(true));
+            });
+        }
+
+        function createProductCard(product) {
+            const div = document.createElement('div');
+            div.className = 'card animate-fade-in';
+            
+            const platformBadgeClass = `badge-${product.platform}`;
+            const ctaText = product.platform === 'fiverr' ? 'Hire on Fiverr' : `Buy on ${product.platform.charAt(0).toUpperCase() + product.platform.slice(1)}`;
+            
+            // Randomly add a "Hot" or "New" badge for visual attraction
+            const showBadge = Math.random() > 0.7;
+            const badgeType = Math.random() > 0.5 ? 'Hot' : 'New';
+            const badgeHtml = showBadge ? `<span class="badge-hot blinking">${badgeType}</span>` : '';
+
+            div.innerHTML = `
+                ${badgeHtml}
+                <a href="product-detail.html?id=${product.id}" class="card-image">
+                    <img src="${product.image}" alt="${product.title}">
+                </a>
+                <div class="card-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                         <span class="platform-badge ${platformBadgeClass}">${product.platform}</span>
+                         ${product.deal ? '<span class="live-indicator"><div class="live-dot"></div> Deal</span>' : ''}
+                    </div>
+                    <a href="product-detail.html?id=${product.id}"><h3 class="card-title">${product.title}</h3></a>
+                    <div class="rating">
+                        ${renderStars(product.rating)}
+                        <span style="font-size: 0.8rem; color: #64748b; margin-left: 0.5rem">(${product.rating})</span>
+                    </div>
+                    <div class="card-footer">
+                        <span class="price">${product.price}</span>
+                        <a href="${product.link}" class="btn btn-primary btn-sm" onclick="trackClick('${product.id}', '${product.link}')" target="_blank">
+                            ${ctaText}
+                        </a>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < Math.floor(rating)) {
+                    stars += '<i data-lucide="star" style="width: 14px; fill: #f59e0b; color: #f59e0b"></i>';
+                } else {
+                    stars += '<i data-lucide="star" style="width: 14px; color: #cbd5e1"></i>';
+                }
+            }
+            return stars;
+        }
+    </script>
+</body>
+</html>
