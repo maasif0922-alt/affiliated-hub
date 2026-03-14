@@ -733,32 +733,23 @@ function loadSampleData() {
     
     localStorage.setItem('products', JSON.stringify(sampleProducts));
 }
+// --- Platform Menu Dropdown Logic ---
 
-// --- Sharing Logic ---
-
-function shareProduct(id, title) {
-    const url = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, '')}/product-detail.html?id=${id}`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: title,
-            text: `Check out this amazing deal: ${title}`,
-            url: url
-        }).catch(err => console.log('Error sharing', err));
-    } else {
-        // Fallback: Copy to clipboard
-        const tempInput = document.createElement('input');
-        tempInput.value = url;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        
-        // Show a temporary toast/alert
-        const toast = document.createElement('div');
-        toast.className = 'share-toast';
-        toast.innerText = 'Link copied to clipboard!';
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
+function togglePlatformMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('mobile-platform-menu');
+    if (menu) {
+        menu.classList.toggle('active');
     }
 }
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('mobile-platform-menu');
+    const trigger = document.querySelector('.mobile-dropdown-trigger');
+    if (menu && menu.classList.contains('active')) {
+        if (!menu.contains(e.target) && !trigger.contains(e.target)) {
+            menu.classList.remove('active');
+        }
+    }
+});
