@@ -631,10 +631,10 @@ function createProductCard(product) {
     const isDirect = product.platform === 'direct';
     const finalCtaText = isDirect ? 'Add to Store Cart' : ctaText;
 
-    // Discount Calculation & Badge Logic
+    // Simplified & Deterministic Badge Logic
     let discountHtml = '';
     let discountPct = 0;
-    if (product.oldPrice) {
+    if (product.oldPrice && product.price) {
         const current = parseFloat(product.price.replace(/[^\d.]/g, ''));
         const old = parseFloat(product.oldPrice.replace(/[^\d.]/g, ''));
         if (!isNaN(current) && !isNaN(old) && old > current) {
@@ -643,10 +643,15 @@ function createProductCard(product) {
         }
     }
 
-    const showBadge = (product.featured || Math.random() > 0.8 || discountPct > 0);
-    const badgeType = discountPct > 0 ? 'DEAL' : (product.featured ? 'Featured' : (Math.random() > 0.5 ? 'Hot' : 'New'));
-    const isDeal = discountPct > 0;
-    const badgeHtml = showBadge ? `<span class="badge-hot blinking ${isDeal ? 'badge-deal' : ''}">${badgeType}</span>` : '';
+    // Determine badge type based on data, not randomness
+    let badgeHtml = '';
+    if (discountPct > 0) {
+        badgeHtml = `<span class="badge-hot blinking badge-deal">DEAL</span>`;
+    } else if (product.featured) {
+        badgeHtml = `<span class="badge-hot">FEATURED</span>`;
+    } else if (product.deal) {
+        badgeHtml = `<span class="badge-hot blinking">HOT DEAL</span>`;
+    }
     const oldPriceHtml = discountPct > 0 ? `<span class="price-old">${formatPrice(product.oldPrice)}</span>` : '';
 
     div.innerHTML = `
