@@ -112,13 +112,23 @@ function getLocalizationSettings() {
         currency: 'USD',
         language: 'en',
         rates: { USD: 1, AED: 3.67, SAR: 3.75, PKR: 280, INR: 83 },
-        symbols: { USD: '$', AED: 'د.إ', SAR: 'ر.س', PKR: 'Rs', INR: '₹' }
+        symbols: { USD: '$', AED: 'AED', SAR: 'SAR', PKR: 'Rs', INR: '₹' }
     };
     const settings = JSON.parse(localStorage.getItem('loc_settings') || 'null');
     if (!settings) {
         localStorage.setItem('loc_settings', JSON.stringify(defaults));
         return defaults;
     }
+    
+    // Migration: Update old script symbols to English if found
+    let needsUpdate = false;
+    if (settings.symbols.AED === 'د.إ') { settings.symbols.AED = 'AED'; needsUpdate = true; }
+    if (settings.symbols.SAR === 'ر.س') { settings.symbols.SAR = 'SAR'; needsUpdate = true; }
+    
+    if (needsUpdate) {
+        localStorage.setItem('loc_settings', JSON.stringify(settings));
+    }
+
     return settings;
 }
 
