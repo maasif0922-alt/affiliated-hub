@@ -128,6 +128,58 @@
                 gap: 2rem;
             }
         }
+
+        /* Detail Specific Deal Styles */
+        .detail-deal-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #cc0c39 0%, #8b0000 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(204, 12, 57, 0.4);
+        }
+
+        /* Pulse Animation from style.css should work if blinking class is added */
+
+        .share-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .share-icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .share-icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-whatsapp { background: #25D366; }
+        .btn-facebook { background: #1877F2; }
+        .btn-twitter { background: #1DA1F2; }
+        .btn-copy { background: #64748b; }
     </style>
 </head>
 <body>
@@ -139,6 +191,11 @@
     </div>
 
     <main class="container product-detail-container animate-fade-in" id="product-content">
+        <div class="back-btn-container" style="grid-column: 1 / -1; padding-bottom: 0;">
+            <a href="javascript:history.back()" class="back-btn">
+                <i data-lucide="arrow-left"></i> Go Back
+            </a>
+        </div>
         <div class="product-gallery">
             <div class="main-image">
                 <img id="detail-image" src="" alt="Product Image">
@@ -150,11 +207,20 @@
         
         <div class="product-info">
             <span id="detail-platform" class="platform-badge"></span>
+            <div id="detail-deal-label" style="display: none;">
+                <span class="detail-deal-badge blinking">Limited time deal</span>
+            </div>
             <h1 id="detail-title">Loading...</h1>
             
-            <div class="meta-row">
+            <div class="meta-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem; border: none; margin-bottom: 1rem; padding-bottom: 0;">
                 <div class="rating" id="detail-rating"></div>
-                <div class="detail-price" id="detail-price"></div>
+                <div style="display: flex; align-items: baseline; gap: 1rem; margin-top: 0.5rem;">
+                    <span id="detail-discount" style="font-size: 2rem; color: #cc0c39; font-weight: 400; display: none;">-0%</span>
+                    <div class="detail-price" id="detail-price"></div>
+                </div>
+                <div id="detail-list-price-row" style="display: none; color: #64748b; font-size: 0.9rem;">
+                    List Price: <span id="detail-old-price" style="text-decoration: line-through;"></span>
+                </div>
             </div>
 
             <div class="description">
@@ -187,6 +253,16 @@
                     Buy Now
                 </a>
             </div>
+
+            <div class="share-section">
+                <h3 style="font-size: 1rem; font-weight: 700;">Share this deal with friends</h3>
+                <div class="share-buttons">
+                    <button class="share-icon-btn btn-whatsapp" onclick="shareTo('whatsapp')" title="Share on WhatsApp"><i data-lucide="message-circle"></i></button>
+                    <button class="share-icon-btn btn-facebook" onclick="shareTo('facebook')" title="Share on Facebook"><i data-lucide="facebook"></i></button>
+                    <button class="share-icon-btn btn-twitter" onclick="shareTo('twitter')" title="Share on Twitter"><i data-lucide="twitter"></i></button>
+                    <button class="share-icon-btn btn-copy" onclick="copyProductLink()" title="Copy Link"><i data-lucide="copy"></i></button>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -216,7 +292,7 @@
 
             document.title = `${p.title} | AffiliateHub`;
             document.getElementById('detail-title').innerText = p.title;
-            document.getElementById('detail-price').innerText = p.price;
+            document.getElementById('detail-price').innerText = formatPrice(p.price);
             document.getElementById('detail-platform').innerText = p.platform;
             document.getElementById('detail-platform').classList.add(`badge-${p.platform}`);
 
@@ -279,6 +355,40 @@
             }
 
             if (window.lucide) lucide.createIcons();
+            
+            // Handle Discount Display
+            if (p.oldPrice) {
+                const current = parseFloat(p.price.replace(/[^\d.]/g, ''));
+                const old = parseFloat(p.oldPrice.replace(/[^\d.]/g, ''));
+                if (!isNaN(current) && !isNaN(old) && old > current) {
+                    const pct = Math.round(((old - current) / old) * 100);
+                    document.getElementById('detail-discount').innerText = `-${pct}%`;
+                    document.getElementById('detail-discount').style.display = 'block';
+                    document.getElementById('detail-old-price').innerText = formatPrice(p.oldPrice);
+                    document.getElementById('detail-list-price-row').style.display = 'block';
+                    document.getElementById('detail-deal-label').style.display = 'block';
+                }
+            }
+        }
+
+        function shareTo(platform) {
+            const url = window.location.href;
+            const text = `Check out this amazing deal: ${document.getElementById('detail-title').innerText}`;
+            
+            let shareUrl = '';
+            switch(platform) {
+                case 'whatsapp': shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`; break;
+                case 'facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`; break;
+                case 'twitter': shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`; break;
+            }
+            if (shareUrl) window.open(shareUrl, '_blank');
+        }
+
+        function copyProductLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link copied to clipboard!');
+            });
         }
 
         function showError() {

@@ -92,48 +92,8 @@
     <script src="js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            renderDirectStore();
+            renderPlatformProducts('direct', 'dropshipping-grid');
         });
-
-        function renderDirectStore() {
-            const products = JSON.parse(localStorage.getItem('products') || '[]');
-            const grid = document.getElementById('dropshipping-grid');
-            
-            // Filter products that belong to the direct store (platform: 'direct')
-            const directProducts = products.filter(p => p.platform === 'direct');
-            
-            if (directProducts.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0;">
-                        <i data-lucide="package-search" style="width: 64px; height: 64px; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                        <h3 style="font-size: 1.5rem; color: #64748b;">No products in store yet.</h3>
-                        <p style="color: #94a3b8;">Check back later or visit our affiliate sections!</p>
-                    </div>
-                `;
-            } else {
-                directProducts.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'direct-card animate-fade-in';
-                    card.innerHTML = `
-                        <a href="product-detail.html?id=${p.id}">
-                            <img src="${p.image}" alt="${p.title}">
-                        </a>
-                        <div class="direct-card-content">
-                            <h3 style="font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem; min-height: 2.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.title}</h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-                                <span class="direct-price">${p.price}</span>
-                                <span style="font-size: 0.8rem; color: #22c55e; font-weight: 700;">In Stock</span>
-                            </div>
-                            <button class="btn btn-primary add-cart-btn" onclick="addToCart('${p.id}')">
-                                <i data-lucide="shopping-cart" style="width: 18px;"></i> Add to Cart
-                            </button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            }
-            if (window.lucide) lucide.createIcons();
-        }
     </script>
 </body>
 </html>

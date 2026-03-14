@@ -37,6 +37,11 @@
 
     <header class="page-header">
         <div class="container animate-fade-in">
+            <div class="back-btn-container">
+                <a href="index.html" class="back-btn">
+                    <i data-lucide="arrow-left"></i> Back to Home
+                </a>
+            </div>
             <h1>Trending <span class="ali-tag">AliExpress</span> Products</h1>
             <p>Discover high-quality gadgets and unique finds at unbeatable prices from AliExpress.</p>
         </div>
@@ -57,52 +62,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderPlatformProducts('aliexpress', 'aliexpress-products');
         });
-
-        function renderPlatformProducts(platform, gridId) {
-            const products = JSON.parse(localStorage.getItem('products') || '[]');
-            const grid = document.getElementById(gridId);
-            
-            products.filter(p => p.platform === platform).forEach(p => {
-                grid.appendChild(createProductCard(p));
-            });
-            
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function createProductCard(product) {
-            const div = document.createElement('div');
-            div.className = 'card animate-fade-in';
-            div.innerHTML = `
-                <div class="card-image">
-                    <img src="${product.image}" alt="${product.title}">
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${product.title}</h3>
-                    <div class="rating">
-                        ${renderStars(product.rating)}
-                    </div>
-                    <div class="card-footer">
-                        <span class="price">${product.price}</span>
-                        <a href="${product.link}" class="btn btn-primary" onclick="trackClick('${product.id}', '${product.link}')" target="_blank">
-                            Buy on AliExpress
-                        </a>
-                    </div>
-                </div>
-            `;
-            return div;
-        }
-
-        function renderStars(rating) {
-            let stars = '';
-            for (let i = 0; i < 5; i++) {
-                if (i < Math.floor(rating)) {
-                    stars += '<i data-lucide="star" style="width: 14px; fill: #f59e0b; color: #f59e0b"></i>';
-                } else {
-                    stars += '<i data-lucide="star" style="width: 14px; color: #cbd5e1"></i>';
-                }
-            }
-            return stars;
-        }
     </script>
 </body>
 </html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AffiliateHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--hero-mesh);
+            background-color: var(--bg-dark);
+            padding: 2rem;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: var(--shadow-xl);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .auth-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.4);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        .btn-auth {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div style="position: fixed; top: 2rem; left: 2rem; z-index: 100;">
+        <a href="index.html" class="back-btn" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+            <i data-lucide="arrow-left"></i> Home
+        </a>
+    </div>
+    <div class="auth-card animate-fade-in">
+        <div class="auth-header">
+            <a href="index.html" class="logo" style="display: inline-block; margin-bottom: 1rem; font-size: 1.5rem;">
+                <span class="logo-accent">Affiliate</span>Hub
+            </a>
+            <h1>Welcome Back</h1>
+            <p>Login to your account to continue</p>
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="name@example.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary btn-auth">Login to Account</button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="register.html">Create One</a>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const result = loginUser(email, password);
+            if (result.success) {
+                location.href = 'index.html';
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+</body>
+</html>
