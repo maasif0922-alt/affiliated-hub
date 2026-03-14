@@ -143,6 +143,8 @@ button {
     object-fit: contain;
     padding: 1rem;
     transition: transform 0.5s ease;
+    color: transparent; /* Hide alt text overlap */
+    text-indent: -9999px; /* Protection against alt text visibility */
 }
 
 .card:hover .card-image img {

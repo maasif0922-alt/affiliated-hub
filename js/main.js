@@ -558,22 +558,27 @@ function createProductCard(product) {
     let discountHtml = '';
     let discountPct = 0;
     if (product.oldPrice && product.price) {
-        const current = parseFloat(product.price.replace(/[^\d.]/g, ''));
-        const old = parseFloat(product.oldPrice.replace(/[^\d.]/g, ''));
+        // More robust price parsing handles commas and currency symbols
+        const cleanPrice = (str) => parseFloat(str.replace(/,/g, '').match(/[\d.]+/));
+        const current = cleanPrice(product.price);
+        const old = cleanPrice(product.oldPrice);
+        
         if (!isNaN(current) && !isNaN(old) && old > current) {
             discountPct = Math.round(((old - current) / old) * 100);
             discountHtml = `<span class="discount-badge-standalone">-${discountPct}%</span>`;
         }
     }
 
-    // Determine badge type based on data, not randomness
+    // Determine badge type and style
     let badgeHtml = '';
+    const isDeal = discountPct > 0 || product.deal;
+    
     if (discountPct > 0) {
         badgeHtml = `<span class="badge-hot blinking badge-deal">DEAL</span>`;
+    } else if (product.deal) {
+        badgeHtml = `<span class="badge-hot blinking badge-deal">HOT DEAL</span>`;
     } else if (product.featured) {
         badgeHtml = `<span class="badge-hot">FEATURED</span>`;
-    } else if (product.deal) {
-        badgeHtml = `<span class="badge-hot blinking">HOT DEAL</span>`;
     }
     const oldPriceHtml = discountPct > 0 ? `<span class="price-old">${formatPrice(product.oldPrice)}</span>` : '';
 
