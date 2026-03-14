@@ -12,76 +12,11 @@ function initApp() {
     trackPageView(); // Analytics
     renderNavbar();
     renderFooter();
-    initMobileMenu(); // Mobile Nav
     handleSearch();
     loadSampleData();
     applySiteSettings();
     updateCartBadge();
     initScrollReveal();
-}
-
-function initMobileMenu() {
-    // Create drawer and overlay if they don't exist
-    if (!document.querySelector('.mobile-drawer')) {
-        const drawer = document.createElement('div');
-        drawer.className = 'mobile-drawer';
-        const loc = getLocalizationSettings();
-        const curOptions = Object.keys(loc.rates).map(c => `<option value="${c}" ${loc.currency === c ? 'selected' : ''}>${c}</option>`).join('');
-        const langOptions = `<option value="en" ${loc.language === 'en' ? 'selected' : ''}>EN</option>
-                             <option value="ur" ${loc.language === 'ur' ? 'selected' : ''}>UR</option>`;
-
-        drawer.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div class="logo"><span class="logo-accent">Affiliate</span>Hub</div>
-                <button id="close-drawer" style="font-size: 1.5rem;">&times;</button>
-            </div>
-            <div class="drawer-links">
-                <a href="index.html"><i data-lucide="home"></i> Home</a>
-                <a href="amazon.html"><i data-lucide="shopping-cart"></i> Amazon</a>
-                <a href="aliexpress.html"><i data-lucide="globe"></i> AliExpress</a>
-                <a href="fiverr.html"><i data-lucide="briefcase"></i> Fiverr</a>
-                <a href="dropshipping.html" style="color: var(--primary-color)"><i data-lucide="store"></i> My Store</a>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 1rem 0;">
-                <a href="login.html"><i data-lucide="user"></i> Login / My Account</a>
-            </div>
-            <div class="drawer-loc-section">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700;">Settings</p>
-                <div style="display: flex; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <span style="font-size: 0.7rem; display: block; margin-bottom: 0.25rem;">Currency</span>
-                        <select onchange="setCurrency(this.value)" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc;">
-                            ${curOptions}
-                        </select>
-                    </div>
-                    <div style="flex: 1;">
-                        <span style="font-size: 0.7rem; display: block; margin-bottom: 0.25rem;">Language</span>
-                        <select onchange="setLanguage(this.value)" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc;">
-                            ${langOptions}
-                        </select>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(drawer);
-
-        const overlay = document.createElement('div');
-        overlay.className = 'drawer-overlay';
-        document.body.appendChild(overlay);
-
-        // Toggle Logic
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.mobile-menu-toggle')) {
-                drawer.classList.add('active');
-                overlay.classList.add('active');
-            }
-            if (e.target.id === 'close-drawer' || e.target.classList.contains('drawer-overlay')) {
-                drawer.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-        });
-
-        if (window.lucide) lucide.createIcons();
-    }
 }
 
 // --- Analytics & Tracking ---
@@ -246,24 +181,18 @@ function renderNavbar() {
 
     const user = getCurrentUser();
     const authBtn = user ? `
-        <div class="user-profile-nav" style="display: flex; align-items: center; gap: 1rem;">
-            <div class="user-info-mini" style="text-align: right; line-height: 1;">
-                <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">Welcome,</span>
-                <span style="font-weight: 700; font-size: 0.85rem;">${user.name}</span>
-            </div>
-            <button onclick="logoutUser()" class="btn-logout" title="Logout">
-                <i data-lucide="log-out"></i>
+        <div class="user-profile-nav" style="display: flex; align-items: center; gap: 0.5rem;">
+            <button onclick="logoutUser()" class="btn-logout" title="Logout" style="width: 32px; height: 32px;">
+                <i data-lucide="log-out" style="width: 14px;"></i>
             </button>
         </div>
     ` : `
-        <a href="login.html" class="btn-login">
-            <i data-lucide="user"></i> Login
+        <a href="login.html" class="btn-login" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+            <i data-lucide="user" style="width: 14px;"></i> Login
         </a>
     `;
 
     const categories = JSON.parse(localStorage.getItem('categories') || '["Electronics", "Smart Home", "Digital Marketing", "Logo Design", "Gadgets", "Video Editing"]');
-    if (!localStorage.getItem('categories')) localStorage.setItem('categories', JSON.stringify(categories));
-
     const categoryOptions = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 
     const loc = getLocalizationSettings();
@@ -274,22 +203,40 @@ function renderNavbar() {
     nav.className = 'glass sticky-nav';
     nav.innerHTML = `
         <div class="container nav-content">
-            <div class="nav-left">
+            <div class="nav-row-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <a href="index.html" class="logo">
                     <span class="logo-accent">Affiliate</span>Hub
                 </a>
-                
-                <ul class="nav-main-links">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="cart-nav-trigger" onclick="location.href='checkout.html'" style="width: 32px; height: 32px;">
+                        <i data-lucide="shopping-bag" style="width: 18px;"></i>
+                        <span class="cart-count">0</span>
+                    </div>
+                    ${authBtn}
+                </div>
+            </div>
+            
+            <div class="search-container" style="width: 100%;">
+                <select id="search-category" style="background: transparent; border: none; border-right: 1px solid var(--border-color); padding-right: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); outline: none; cursor: pointer; max-width: 80px;">
+                    <option value="all">All</option>
+                    ${categoryOptions}
+                </select>
+                <input type="text" id="global-search" placeholder="Search..." id="search-placeholder">
+                <button id="search-trigger" style="color: var(--primary-color)">
+                    <i data-lucide="search" style="width: 18px;"></i>
+                </button>
+            </div>
+
+            <div class="nav-bottom-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem;">
+                <ul class="nav-main-links" style="margin: 0;">
                     <li><a href="amazon.html" id="nav-amazon">Amazon</a></li>
                     <li><a href="aliexpress.html" id="nav-aliexpress">AliExpress</a></li>
                     <li><a href="fiverr.html" id="nav-fiverr">Fiverr</a></li>
                     <li><a href="dropshipping.html" id="nav-store" style="color: var(--primary-color)">Store</a></li>
                     <li><a href="#blog-section" id="nav-blog">Blog</a></li>
                 </ul>
-            </div>
-            
-            <div class="nav-right">
-                <div class="loc-selectors" style="display: flex; gap: 0.5rem; margin-right: 1rem;">
+                
+                <div class="loc-selectors" style="display: flex; gap: 0.5rem; flex-shrink: 0;">
                     <select onchange="setCurrency(this.value)" style="background: rgba(0,0,0,0.05); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 5px; font-size: 0.7rem; cursor: pointer;">
                         ${curOptions}
                     </select>
@@ -297,36 +244,12 @@ function renderNavbar() {
                         ${langOptions}
                     </select>
                 </div>
-
-                <div class="search-container">
-                    <select id="search-category" style="background: transparent; border: none; border-right: 1px solid var(--border-color); padding-right: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); outline: none; cursor: pointer; max-width: 100px;">
-                        <option value="all">All</option>
-                        ${categoryOptions}
-                    </select>
-                    <input type="text" id="global-search" placeholder="Search..." id="search-placeholder">
-                    <button id="search-trigger" style="color: var(--primary-color)">
-                        <i data-lucide="search" style="width: 18px;"></i>
-                    </button>
-                </div>
-
-                <div class="cart-nav-trigger" onclick="location.href='checkout.html'">
-                    <i data-lucide="shopping-bag"></i>
-                    <span class="cart-count">0</span>
-                </div>
-
-                ${authBtn}
-
-                <button class="mobile-menu-toggle" style="display: none;">
-                    <i data-lucide="menu"></i>
-                </button>
             </div>
         </div>
     `;
     
-    // Refresh icons
-    if (window.lucide) {
-        lucide.createIcons();
-    }
+    if (window.lucide) lucide.createIcons();
+    updateCartBadge();
 }
 
 function renderFooter() {
