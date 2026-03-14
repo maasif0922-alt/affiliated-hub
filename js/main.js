@@ -25,6 +25,11 @@ function initMobileMenu() {
     if (!document.querySelector('.mobile-drawer')) {
         const drawer = document.createElement('div');
         drawer.className = 'mobile-drawer';
+        const loc = getLocalizationSettings();
+        const curOptions = Object.keys(loc.rates).map(c => `<option value="${c}" ${loc.currency === c ? 'selected' : ''}>${c}</option>`).join('');
+        const langOptions = `<option value="en" ${loc.language === 'en' ? 'selected' : ''}>EN</option>
+                             <option value="ur" ${loc.language === 'ur' ? 'selected' : ''}>UR</option>`;
+
         drawer.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <div class="logo"><span class="logo-accent">Affiliate</span>Hub</div>
@@ -38,6 +43,23 @@ function initMobileMenu() {
                 <a href="dropshipping.html" style="color: var(--primary-color)"><i data-lucide="store"></i> My Store</a>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 1rem 0;">
                 <a href="login.html"><i data-lucide="user"></i> Login / My Account</a>
+            </div>
+            <div class="drawer-loc-section">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700;">Settings</p>
+                <div style="display: flex; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <span style="font-size: 0.7rem; display: block; margin-bottom: 0.25rem;">Currency</span>
+                        <select onchange="setCurrency(this.value)" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc;">
+                            ${curOptions}
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <span style="font-size: 0.7rem; display: block; margin-bottom: 0.25rem;">Language</span>
+                        <select onchange="setLanguage(this.value)" style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc;">
+                            ${langOptions}
+                        </select>
+                    </div>
+                </div>
             </div>
         `;
         document.body.appendChild(drawer);
