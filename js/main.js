@@ -228,6 +228,7 @@ function renderNavbar() {
             </div>
 
             <div class="nav-bottom-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem;">
+                <!-- Desktop Links (auto-hidden on mobile by CSS) -->
                 <ul class="nav-main-links" style="margin: 0;">
                     <li><a href="amazon.html" id="nav-amazon">Amazon</a></li>
                     <li><a href="aliexpress.html" id="nav-aliexpress">AliExpress</a></li>
@@ -235,6 +236,22 @@ function renderNavbar() {
                     <li><a href="dropshipping.html" id="nav-store" style="color: var(--primary-color)">Store</a></li>
                     <li><a href="#blog-section" id="nav-blog">Blog</a></li>
                 </ul>
+
+                <!-- Mobile Platform Dropdown -->
+                <div class="mobile-nav-wrapper" style="position: relative;">
+                    <button class="mobile-dropdown-trigger pulse-blue" onclick="togglePlatformMenu(event)">
+                        <i data-lucide="layers"></i>
+                        <span>Platforms</span>
+                        <i data-lucide="chevron-down" style="width: 10px; margin-left: auto;"></i>
+                    </button>
+                    <div id="mobile-platform-menu" class="mobile-dropdown-menu">
+                        <a href="amazon.html"><i data-lucide="shopping-cart"></i> Amazon</a>
+                        <a href="aliexpress.html"><i data-lucide="globe"></i> AliExpress</a>
+                        <a href="fiverr.html"><i data-lucide="briefcase"></i> Fiverr</a>
+                        <a href="dropshipping.html" style="color: var(--primary-color)"><i data-lucide="store"></i> My Store</a>
+                        <a href="#blog-section"><i data-lucide="book-open"></i> Blog</a>
+                    </div>
+                </div>
                 
                 <div class="loc-selectors" style="display: flex; gap: 0.5rem; flex-shrink: 0;">
                     <select onchange="setCurrency(this.value)" style="background: rgba(0,0,0,0.05); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 5px; font-size: 0.7rem; cursor: pointer;">

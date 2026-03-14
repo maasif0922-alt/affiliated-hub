@@ -609,7 +609,8 @@ section {
 }
 
 @media (max-width: 850px) {
-    /* Links and selectors now visible but styled for mobile */
+    /* Hide horizontal links by default on mobile, replaced by dropdown */
+    .nav-main-links { display: none !important; }
     .loc-selectors { display: flex !important; }
 }
 
@@ -771,21 +772,81 @@ section {
     }
 
     .nav-main-links {
+        display: none !important;
+    }
+
+    /* Professional Dropdown Button */
+    .mobile-dropdown-trigger {
         display: flex !important;
-        overflow-x: auto;
-        width: 100%;
-        padding: 0.5rem 0;
-        gap: 1.5rem;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 1rem;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
     }
 
-    .nav-main-links::-webkit-scrollbar {
+    .mobile-dropdown-trigger i {
+        width: 14px;
+        color: var(--primary-color);
+    }
+
+    .mobile-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 200px;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--border-color);
+        margin-top: 0.5rem;
         display: none;
+        z-index: 1000;
+        overflow: hidden;
+        animation: slideInDown 0.2s ease;
     }
 
-    .nav-main-links li {
-        flex-shrink: 0;
+    .mobile-dropdown-menu.active {
+        display: block;
+    }
+
+    .mobile-dropdown-menu a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-dropdown-menu a:hover {
+        background: rgba(99, 102, 241, 0.05);
+        color: var(--primary-color);
+    }
+
+    .pulse-blue {
+        animation: pulse-blue 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-blue {
+        0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+        70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    .nav-bottom-row {
+        justify-content: flex-start !important;
+        gap: 1rem !important;
     }
 
     .search-container {
