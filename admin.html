@@ -290,6 +290,52 @@
                 grid-template-columns: 1fr !important;
             }
         }
+
+        /* Mini Toggle Switch */
+        .switch-mini {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+
+        .switch-mini input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-mini {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-mini:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-mini {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider-mini:before {
+            transform: translateX(14px);
+        }
     </style>
 </head>
 <body style="background: white;">
@@ -866,9 +912,15 @@
                     <td style="font-weight: 700; color: var(--primary-color)">${p.price}</td>
                     <td>${stats[p.id] || 0}</td>
                     <td>
-                        <div class="action-btns">
-                            <button class="btn-icon" onclick="openEditModal('${p.id}')"><i data-lucide="edit-3" style="width: 16px;"></i></button>
-                            <button class="btn-icon btn-icon-danger" onclick="deleteProduct('${p.id}', '${platform}')"><i data-lucide="trash-2" style="width: 16px;"></i></button>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <label class="switch-mini" title="Featured on Homepage">
+                                <input type="checkbox" ${p.featured ? 'checked' : ''} onchange="toggleFeatured('${p.id}', this.checked, '${platform}')">
+                                <span class="slider-mini"></span>
+                            </label>
+                            <div class="action-btns">
+                                <button class="btn-icon" onclick="openEditModal('${p.id}')"><i data-lucide="edit-3" style="width: 16px;"></i></button>
+                                <button class="btn-icon btn-icon-danger" onclick="deleteProduct('${p.id}', '${platform}')"><i data-lucide="trash-2" style="width: 16px;"></i></button>
+                            </div>
                         </div>
                     </td>
                 `;
@@ -1300,6 +1352,18 @@
             localStorage.setItem('click_stats', '{}');
             localStorage.setItem('click_history', '[]');
             refreshData();
+        }
+
+        function toggleFeatured(id, isFeatured, platform) {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) {
+                products[index].featured = isFeatured;
+                localStorage.setItem('products', JSON.stringify(products));
+                // Optional: show a mini toast
+                console.log(`Product ${id} featured set to ${isFeatured}`);
+                renderPlatformList(platform);
+            }
         }
 
         function toggleAdminSidebar() {

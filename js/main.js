@@ -659,6 +659,13 @@ function renderPlatformProducts(platform, gridId, limit = null) {
         return p.platform === platform;
     });
 
+    // Apply sorting: Newest products first
+    filtered.sort((a, b) => {
+        const idA = parseInt(a.id.split('-')[1]) || 0;
+        const idB = parseInt(b.id.split('-')[1]) || 0;
+        return idB - idA;
+    });
+
     // Special logic for Trending: Sort by click count
     if (platform === 'trending') {
         filtered.sort((a, b) => (stats[b.id] || 0) - (stats[a.id] || 0));
@@ -687,7 +694,8 @@ function renderPlatformProducts(platform, gridId, limit = null) {
 // --- Data Management ---
 
 function loadSampleData() {
-    if (localStorage.getItem('products')) return;
+    const existing = localStorage.getItem('products');
+    if (existing && JSON.parse(existing).length > 0) return;
     
     const sampleProducts = [
         {
