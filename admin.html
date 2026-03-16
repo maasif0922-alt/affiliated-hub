@@ -612,12 +612,22 @@
                                 <input type="url" id="p-link" placeholder="Your tracked URL" required>
                             </div>
                              <div class="form-group">
-                                 <label>Current Offer Price</label>
-                                 <input type="text" id="p-price" placeholder="e.g. $19.83" required>
+                                 <label>Currency</label>
+                                 <select id="p-currency" style="width:100%;">
+                                     <option value="USD">USD ($) — US Dollar</option>
+                                     <option value="AED">AED — UAE Dirham</option>
+                                     <option value="SAR">SAR — Saudi Riyal</option>
+                                     <option value="PKR">PKR (Rs) — Pakistani Rupee</option>
+                                     <option value="INR">INR (₹) — Indian Rupee</option>
+                                 </select>
                              </div>
                              <div class="form-group">
-                                 <label>List Price (Before Discount)</label>
-                                 <input type="text" id="p-old-price" placeholder="e.g. $32.99">
+                                 <label>Current Offer Price (Amount Only)</label>
+                                 <input type="number" step="0.01" id="p-price" placeholder="e.g. 19.83" required>
+                             </div>
+                             <div class="form-group">
+                                 <label>List Price / Before Discount (Amount Only)</label>
+                                 <input type="number" step="0.01" id="p-old-price" placeholder="e.g. 32.99">
                              </div>
                             <div class="form-group">
                                 <label>Featured Visibility</label>
@@ -1182,8 +1192,13 @@
             document.getElementById('p-id').value = p.id;
             document.getElementById('p-platform').value = p.platform;
             document.getElementById('p-title').value = p.title;
-            document.getElementById('p-price').value = p.price;
-            document.getElementById('p-old-price').value = p.oldPrice || '';
+            // Restore currency selector
+            const savedCur = p.priceCurrency || 'USD';
+            document.getElementById('p-currency').value = savedCur;
+            // Extract numeric amount from stored price string (e.g. "AED 656.80" → "656.80")
+            const extractNum = (str) => { if (!str) return ''; const m = str.match(/[\d.]+/); return m ? m[0] : str; };
+            document.getElementById('p-price').value = extractNum(p.price);
+            document.getElementById('p-old-price').value = extractNum(p.oldPrice || '');
             document.getElementById('p-link').value = p.link;
             document.getElementById('p-cat-select').value = p.category || '';
             document.getElementById('p-country-select').value = p.country || 'all';
@@ -1252,6 +1267,14 @@
 
                 const products = JSON.parse(localStorage.getItem('products') || '[]');
                 
+                const CURRENCY_SYMBOLS = { USD: '$', AED: 'AED', SAR: 'SAR', PKR: 'Rs', INR: '₹' };
+                const selectedCurrency = document.getElementById('p-currency').value;
+                const currSymbol = CURRENCY_SYMBOLS[selectedCurrency] || '$';
+                const rawPrice = document.getElementById('p-price').value;
+                const rawOldPrice = document.getElementById('p-old-price').value;
+                const formattedPrice = rawPrice ? `${currSymbol} ${parseFloat(rawPrice).toFixed(2)}` : '';
+                const formattedOldPrice = rawOldPrice ? `${currSymbol} ${parseFloat(rawOldPrice).toFixed(2)}` : '';
+
                 if (id) {
                     // Update existing
                     const index = products.findIndex(p => p.id === id);
@@ -1262,8 +1285,9 @@
                             images: finalImages,
                             image: finalImages[0],
                             link: document.getElementById('p-link').value,
-                            price: document.getElementById('p-price').value,
-                            oldPrice: document.getElementById('p-old-price').value,
+                            price: formattedPrice,
+                            oldPrice: formattedOldPrice,
+                            priceCurrency: selectedCurrency,
                             category: document.getElementById('p-cat-select').value,
                             country: document.getElementById('p-country-select').value,
                             featured: document.getElementById('p-featured').value === 'true'
@@ -1278,8 +1302,9 @@
                         image: finalImages[0],
                         link: document.getElementById('p-link').value,
                         platform: platform,
-                        price: document.getElementById('p-price').value,
-                        oldPrice: document.getElementById('p-old-price').value,
+                        price: formattedPrice,
+                        oldPrice: formattedOldPrice,
+                        priceCurrency: selectedCurrency,
                         category: document.getElementById('p-cat-select').value,
                         country: document.getElementById('p-country-select').value,
                         featured: document.getElementById('p-featured').value === 'true',
