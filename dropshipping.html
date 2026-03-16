@@ -155,12 +155,13 @@
         });
 
         function initStoreFilters() {
-            // Populate filter selects from JS data
-            const settings = getLocalizationSettings();
-            const countries = settings.countries || {};
-            const countrySelect = document.getElementById('country-filter');
+            // Populate filter selects from Platform Filters
+            const allFilters = getPlatformFilters();
+            const platformData = allFilters.direct || { categories: [], countries: {} };
             
-            Object.entries(countries).forEach(([code, name]) => {
+            // Countries
+            const countrySelect = document.getElementById('country-filter');
+            Object.entries(platformData.countries || {}).forEach(([code, name]) => {
                 const opt = document.createElement('option');
                 opt.value = code;
                 opt.innerText = name;
@@ -168,9 +169,8 @@
             });
 
             // Categories
-            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
             const categorySelect = document.getElementById('category-filter');
-            categories.forEach(cat => {
+            (platformData.categories || []).forEach(cat => {
                 const opt = document.createElement('option');
                 opt.value = cat;
                 opt.innerText = cat;

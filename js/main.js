@@ -789,3 +789,94 @@ document.addEventListener('click', (e) => {
         }
     }
 });
+
+// --- Platform-Specific Filter Management ---
+
+function getPlatformFilters() {
+    return JSON.parse(localStorage.getItem('platform_filters') || '{}');
+}
+
+function savePlatformFilters(filters) {
+    localStorage.setItem('platform_filters', JSON.stringify(filters));
+}
+
+function refreshPlatformFiltersUI() {
+    const platform = document.getElementById('manage-platform-select').value;
+    const filters = getPlatformFilters();
+    const platformData = filters[platform] || { categories: [], countries: {} };
+
+    // Update Categories Table
+    const catList = document.getElementById('platform-category-list');
+    if (catList) {
+        catList.innerHTML = '';
+        (platformData.categories || []).forEach(cat => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${cat}</td>
+                <td>
+                    <button class="btn-icon btn-icon-danger" onclick="deletePlatformCategory('${platform}', '${cat}')">
+                        <i data-lucide="trash-2" style="width: 16px;"></i>
+                    </button>
+                </td>
+            `;
+            catList.appendChild(tr);
+        });
+    }
+
+    // Update Countries Table
+    const countryList = document.getElementById('platform-country-list');
+    if (countryList) {
+        countryList.innerHTML = '';
+        Object.entries(platformData.countries || {}).forEach(([code, name]) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight: 700">${code}</td>
+                <td>${name}</td>
+                <td>
+                    <button class="btn-icon btn-icon-danger" onclick="deletePlatformCountry('${platform}', '${code}')">
+                        <i data-lucide="trash-2" style="width: 16px;"></i>
+                    </button>
+                </td>
+            `;
+            countryList.appendChild(tr);
+        });
+    }
+
+    if (window.lucide) lucide.createIcons();
+}
+
+function addPlatformCategory(platform, name) {
+    const filters = getPlatformFilters();
+    if (!filters[platform]) filters[platform] = { categories: [], countries: {} };
+    if (!filters[platform].categories.includes(name)) {
+        filters[platform].categories.push(name);
+        savePlatformFilters(filters);
+    }
+    refreshPlatformFiltersUI();
+}
+
+function deletePlatformCategory(platform, name) {
+    const filters = getPlatformFilters();
+    if (filters[platform]) {
+        filters[platform].categories = filters[platform].categories.filter(c => c !== name);
+        savePlatformFilters(filters);
+    }
+    refreshPlatformFiltersUI();
+}
+
+function addPlatformCountry(platform, code, name) {
+    const filters = getPlatformFilters();
+    if (!filters[platform]) filters[platform] = { categories: [], countries: {} };
+    filters[platform].countries[code.toUpperCase()] = name;
+    savePlatformFilters(filters);
+    refreshPlatformFiltersUI();
+}
+
+function deletePlatformCountry(platform, code) {
+    const filters = getPlatformFilters();
+    if (filters[platform] && filters[platform].countries[code]) {
+        delete filters[platform].countries[code];
+        savePlatformFilters(filters);
+    }
+    refreshPlatformFiltersUI();
+}
