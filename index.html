@@ -3,42 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AffiliateHub | Best Deals from Amazon, AliExpress & Fiverr</title>
+    <title>AffiliateHub | Best Deals from Amazon, AliExpress &amp; Fiverr</title>
     <meta name="description" content="Discover the best deals and top-rated services from Amazon, AliExpress, and Fiverr. Earn more with our curated recommendations.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Custom Style -->
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* =========================================
+           HOMEPAGE PREMIUM ENHANCEMENTS
+        ========================================= */
+
+        /* --- Animated Gradient Hero Background --- */
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes shimmer {
+            0%   { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+            50%  { opacity: 0.06; }
+            100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
+        }
+        @keyframes counterUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.85); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes borderGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.3); }
+            50%       { box-shadow: 0 0 20px 6px rgba(99,102,241,0.12); }
+        }
+
+        /* Enhanced Hero */
+        .hero {
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f172a, #1a0536);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            padding: 10rem 0 9rem;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.25) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(236,72,153,0.12) 0%, transparent 60%);
+            z-index: 1;
+        }
+        .hero-shimmer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+            animation: shimmer 5s ease-in-out infinite;
+            z-index: 2;
+        }
+        .hero-grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(99,102,241,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 1;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+        }
+
+        /* Badge pill above h1 */
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99,102,241,0.18);
+            border: 1px solid rgba(99,102,241,0.35);
+            color: #a5b4fc;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.4rem 1.2rem;
+            border-radius: 99px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(8px);
+            animation: scaleIn 0.6s ease forwards;
+        }
+        .hero-pill .live-dot { background: #a5b4fc; }
+
+        /* H1 word highlight */
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #a5b4fc 0%, #f9a8d4 50%, #fbbf24 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero h1 { font-size: 4.5rem; }
+
+        /* CTA buttons */
+        .hero-btns .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 0 30px rgba(99,102,241,0.45), 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .hero-btns .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 40px rgba(99,102,241,0.6), 0 8px 25px rgba(0,0,0,0.35);
+        }
+
+        /* Stat counters strip */
+        .stats-strip {
+            background: #0f172a;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding: 1.5rem 0;
+        }
+        .stats-strip-inner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 3rem;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            animation: counterUp 0.8s ease forwards;
+        }
+        .stat-pill:last-child { border-right: none; }
+        .stat-pill .num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+        }
+        .stat-pill .num span { color: #a5b4fc; }
+        .stat-pill .lbl {
+            font-size: 0.68rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            margin-top: 0.2rem;
+        }
+        @media (max-width: 640px) {
+            .stat-pill { padding: 0.5rem 1.5rem; }
+            .stat-pill .num { font-size: 1.2rem; }
+        }
+
+        /* Platform showcase tiles */
+        .platform-tiles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 5rem;
+        }
+        @media (max-width: 768px) { .platform-tiles { grid-template-columns: 1fr; } }
+        .platform-tile {
+            position: relative;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            padding: 2.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            border: 1px solid rgba(255,255,255,0.08);
+            text-decoration: none;
+        }
+        .platform-tile::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .platform-tile:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .tile-amazon  { background: linear-gradient(135deg, #1a0a00, #2d1a00); }
+        .tile-ali     { background: linear-gradient(135deg, #1a0205, #2d0608); }
+        .tile-fiverr  { background: linear-gradient(135deg, #001a0a, #002d13); }
+        .platform-tile .tile-icon {
+            width: 54px; height: 54px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .tile-amazon .tile-icon  { background: rgba(234,88,12,0.2);  color: #fb923c; }
+        .tile-ali    .tile-icon  { background: rgba(239,68,68,0.2);   color: #f87171; }
+        .tile-fiverr .tile-icon  { background: rgba(22,163,74,0.2);   color: #4ade80; }
+        .platform-tile h3 { font-size: 1.25rem; font-weight: 800; color: white; margin: 0; }
+        .platform-tile p  { font-size: 0.85rem; color: #94a3b8; margin: 0; line-height: 1.5; }
+        .tile-cta {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.8rem; font-weight: 700;
+            margin-top: auto; padding-top: 0.75rem;
+        }
+        .tile-amazon  .tile-cta { color: #fb923c; }
+        .tile-ali     .tile-cta { color: #f87171; }
+        .tile-fiverr  .tile-cta { color: #4ade80; }
+
+        /* Section header enhancement */
+        .section-label {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.2);
+            color: var(--primary-color);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.9rem;
+            border-radius: 99px;
+            margin-bottom: 0.75rem;
+        }
+        .section-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        /* Ticker / Marquee bar */
+        .ticker-bar {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #8b5cf6, #6366f1);
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            padding: 0.6rem 0;
+            overflow: hidden;
+        }
+        .ticker-inner {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee 25s linear infinite;
+        }
+        .ticker-inner span {
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0 3rem;
+        }
+        .ticker-inner .dot { color: rgba(255,255,255,0.4); }
+
+        /* Section card upgrade */
+        .section-card {
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            padding: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        .section-card .section-header { margin-bottom: 2rem; }
+
+        /* Active section tab indicator */
+        .section-title-line {
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .section-line {
+            height: 3px;
+            flex: 1;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            opacity: 0.2;
+        }
+
+        /* Newsletter section upgrade */
+        #newsletter .glass {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%) !important;
+            border: 1px solid rgba(99,102,241,0.3) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        #newsletter .glass::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%);
+            top: -100px; right: -100px;
+            border-radius: 50%;
+        }
+        #newsletter h2 { color: white !important; }
+        #newsletter p  { color: #a5b4fc !important; }
+        #newsletter input {
+            background: rgba(255,255,255,0.08) !important;
+            border-color: rgba(99,102,241,0.35) !important;
+            color: white !important;
+        }
+        #newsletter input::placeholder { color: #94a3b8; }
+
+        /* Section BG alternation */
+        .section-bg-alt {
+            background: linear-gradient(180deg, #f8fafc 0%, #f0f4ff 100%);
+        }
+
+        /* Card hover glow */
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(99,102,241,0.15), 0 4px 12px rgba(0,0,0,0.08);
+            animation: borderGlow 2s ease infinite;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.4rem; }
+            .platform-tiles { gap: 1rem; }
+        }
     </style>
 </head>
 <body>
 
     <nav id="main-nav"></nav>
 
+    <!-- Ticker Bar -->
+    <div class="ticker-bar">
+        <div class="ticker-inner">
+            <span>🔥 Hot Deals Live Now</span><span class="dot">•</span>
+            <span>🛒 Amazon Best Sellers</span><span class="dot">•</span>
+            <span>⚡ AliExpress Flash Sale</span><span class="dot">•</span>
+            <span>🎯 Fiverr Pro Services</span><span class="dot">•</span>
+            <span>💳 Multi-Currency Checkout</span><span class="dot">•</span>
+            <span>🌍 Worldwide Shipping Available</span><span class="dot">•</span>
+            <!-- duplicate for seamless loop -->
+            <span>🔥 Hot Deals Live Now</span><span class="dot">•</span>
+            <span>🛒 Amazon Best Sellers</span><span class="dot">•</span>
+            <span>⚡ AliExpress Flash Sale</span><span class="dot">•</span>
+            <span>🎯 Fiverr Pro Services</span><span class="dot">•</span>
+            <span>💳 Multi-Currency Checkout</span><span class="dot">•</span>
+            <span>🌍 Worldwide Shipping Available</span><span class="dot">•</span>
+        </div>
+    </div>
+
     <header class="hero">
+        <div class="hero-grid-lines"></div>
+        <div class="hero-shimmer"></div>
         <div class="hero-blob blob-1"></div>
         <div class="hero-blob blob-2"></div>
         <div class="container hero-content">
-            <div class="live-indicator animate-fade-in" style="justify-content: center; margin-bottom: 2rem;">
-                <div class="live-dot"></div>
-                <span>Exclusive Drops & Premium Deals</span>
+            <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
+                <div class="hero-pill animate-fade-in">
+                    <div class="live-dot"></div>
+                    Exclusive Drops &amp; Premium Deals
+                </div>
             </div>
-            <h1 class="animate-fade-in" style="animation-delay: 0.2s;">Premium Affiliate <br>& Dropshipping Hub</h1>
-            <p class="animate-fade-in" style="max-width: 700px; margin: 0 auto 3rem; animation-delay: 0.4s;">
+            <h1 class="animate-fade-in" style="animation-delay: 0.2s;">
+                Premium <span class="highlight">Affiliate</span> &amp;<br>Dropshipping Hub
+            </h1>
+            <p class="animate-fade-in" style="max-width: 680px; margin: 0 auto 3rem; font-size: 1.15rem; color: #94a3b8; animation-delay: 0.4s; line-height: 1.75;">
                 Experience a hand-picked selection of elite products from Amazon, AliExpress, and our own Direct Store. Quality verified, curated for excellence.
             </p>
-            <div class="hero-btns animate-fade-in" style="animation-delay: 0.6s;">
-                <a href="register.html" class="btn btn-primary pulse-glow" style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">
+            <div class="hero-btns animate-fade-in" style="animation-delay: 0.6s; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+                <a href="register.html" class="btn btn-primary pulse-glow" style="padding: 1rem 2.5rem; font-size: 1.05rem; border-radius: 99px; font-weight: 800;">
                     <i data-lucide="user-plus"></i> Create Account
                 </a>
-                <a href="dropshipping.html" class="btn btn-outline" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 99px;">
+                <a href="dropshipping.html" class="btn btn-outline" style="background: rgba(255,255,255,0.06); color: white; border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(12px); padding: 1rem 2.5rem; font-size: 1.05rem; border-radius: 99px; font-weight: 800;">
                     <i data-lucide="shopping-bag"></i> Direct Store
                 </a>
             </div>
@@ -46,109 +385,179 @@
             <div class="trust-badges animate-fade-in" style="animation-delay: 0.8s;">
                 <div class="trust-item"><i data-lucide="shield-check"></i> Secure Checkout</div>
                 <div class="trust-item"><i data-lucide="truck"></i> Fast Global Shipping</div>
-                <div class="trust-item"><i data-lucide="award"></i> Verified Product Quality</div>
-                <div class="trust-item"><i data-lucide="refresh-cw"></i> 30-Day Easy Returns</div>
+                <div class="trust-item"><i data-lucide="award"></i> Verified Quality</div>
+                <div class="trust-item"><i data-lucide="refresh-cw"></i> 30-Day Returns</div>
             </div>
         </div>
     </header>
 
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+        <div class="container">
+            <div class="stats-strip-inner">
+                <div class="stat-pill">
+                    <div class="num" id="counter-products">0<span>+</span></div>
+                    <div class="lbl">Products Listed</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="num">3<span>+</span></div>
+                    <div class="lbl">Partner Platforms</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="num">5<span></span></div>
+                    <div class="lbl">Currencies Supported</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="num">24/7<span></span></div>
+                    <div class="lbl">Live Deals</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Dynamic Product Sections -->
     <main>
-        <!-- 1. Store Selection (Your Own Products) -->
-        <section id="store-section" class="reveal-on-scroll">
+
+        <!-- Platform Showcase Tiles -->
+        <section style="padding: 4rem 0 2rem;">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="shopping-bag" style="color: var(--primary-color)"></i> Our Store Selection</h2>
-                    <a href="dropshipping.html" class="view-more-btn">View All Store Items <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+                <div style="text-align:center; margin-bottom: 2.5rem;">
+                    <div class="section-label" style="justify-content:center; display:inline-flex;">
+                        <i data-lucide="layers" style="width:12px;"></i> Shop By Platform
+                    </div>
+                    <h2 style="font-size: 2rem; font-weight: 800; color: var(--bg-dark); margin-top: 0.5rem;">Find Your Perfect Deal</h2>
                 </div>
-                <div class="product-grid" id="store-products">
-                    <!-- Dynamic -->
+                <div class="platform-tiles">
+                    <a href="amazon.html" class="platform-tile tile-amazon">
+                        <div class="tile-icon"><i data-lucide="shopping-cart"></i></div>
+                        <h3>Amazon</h3>
+                        <p>Top-rated bestsellers with verified reviews and fast shipping worldwide.</p>
+                        <div class="tile-cta">Explore Amazon <i data-lucide="arrow-right" style="width:14px;"></i></div>
+                    </a>
+                    <a href="aliexpress.html" class="platform-tile tile-ali">
+                        <div class="tile-icon"><i data-lucide="globe"></i></div>
+                        <h3>AliExpress</h3>
+                        <p>Hidden gems and unique finds at unbeatable prices from global sellers.</p>
+                        <div class="tile-cta">Explore AliExpress <i data-lucide="arrow-right" style="width:14px;"></i></div>
+                    </a>
+                    <a href="fiverr.html" class="platform-tile tile-fiverr">
+                        <div class="tile-icon"><i data-lucide="briefcase"></i></div>
+                        <h3>Fiverr Services</h3>
+                        <p>Premium freelancer services — design, marketing, development &amp; more.</p>
+                        <div class="tile-cta">Explore Fiverr <i data-lucide="arrow-right" style="width:14px;"></i></div>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- 2. Trending Deals (Ranked by popularity) -->
-        <section id="trending" style="background: rgba(99, 102, 241, 0.02)" class="reveal-on-scroll">
+        <!-- 1. our store selection -->
+        <section id="store-section" class="reveal-on-scroll">
+            <div class="container">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title-group">
+                            <div class="section-label"><i data-lucide="store" style="width:12px;"></i> Direct Store</div>
+                            <h2 class="section-title"><i data-lucide="shopping-bag" style="color: var(--primary-color)"></i> Our Store Selection</h2>
+                        </div>
+                        <a href="dropshipping.html" class="view-more-btn">View All Store Items <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+                    </div>
+                    <div class="product-grid" id="store-products"><!-- Dynamic --></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Trending Deals -->
+        <section id="trending" class="reveal-on-scroll section-bg-alt">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="trending-up" style="color: #ef4444"></i> Top Trending Deals</h2>
+                    <div class="section-title-group">
+                        <div class="section-label"><i data-lucide="trending-up" style="width:12px;"></i> Hot Right Now</div>
+                        <h2 class="section-title"><i data-lucide="trending-up" style="color: #ef4444"></i> Top Trending Deals</h2>
+                    </div>
                     <span class="live-indicator"><div class="live-dot"></div> Ranked by Clicks</span>
                 </div>
-                <div class="product-grid" id="trending-products">
-                    <!-- Dynamic -->
-                </div>
+                <div class="product-grid" id="trending-products"><!-- Dynamic --></div>
             </div>
         </section>
 
         <div class="container">
-            <div style="height: 1px; background: linear-gradient(to right, transparent, var(--border-color), transparent); margin: 3rem 0;"></div>
+            <div style="height: 1px; background: linear-gradient(to right, transparent, var(--border-color), transparent); margin: 2rem 0;"></div>
         </div>
 
         <!-- 3. Amazon Section -->
         <section id="amazon-highlights" class="reveal-on-scroll">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="zap" style="color: #ea580c"></i> Amazon Highlights</h2>
-                    <a href="amazon.html" class="view-more-btn">Explore Amazon Section <i data-lucide="arrow-right" style="width: 16px;"></i></a>
-                </div>
-                <div class="product-grid" id="amazon-products">
-                    <!-- Dynamic -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title-group">
+                            <div class="section-label" style="border-color:rgba(234,88,12,0.25); background:rgba(234,88,12,0.06); color:#ea580c;"><i data-lucide="zap" style="width:12px;"></i> Amazon</div>
+                            <h2 class="section-title"><i data-lucide="zap" style="color: #ea580c"></i> Amazon Highlights</h2>
+                        </div>
+                        <a href="amazon.html" class="view-more-btn">Explore Amazon Section <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+                    </div>
+                    <div class="product-grid" id="amazon-products"><!-- Dynamic --></div>
                 </div>
             </div>
         </section>
 
         <!-- 4. AliExpress Finds -->
-        <section id="aliexpress-highlights" style="background: rgba(239, 68, 68, 0.01)" class="reveal-on-scroll">
+        <section id="aliexpress-highlights" class="reveal-on-scroll section-bg-alt">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="globe" style="color: #dc2626"></i> AliExpress Best Finds</h2>
+                    <div class="section-title-group">
+                        <div class="section-label" style="border-color:rgba(220,38,38,0.25); background:rgba(220,38,38,0.06); color:#dc2626;"><i data-lucide="globe" style="width:12px;"></i> AliExpress</div>
+                        <h2 class="section-title"><i data-lucide="globe" style="color: #dc2626"></i> AliExpress Best Finds</h2>
+                    </div>
                     <a href="aliexpress.html" class="view-more-btn">Visit AliExpress Hub <i data-lucide="arrow-right" style="width: 16px;"></i></a>
                 </div>
-                <div class="product-grid" id="aliexpress-products">
-                    <!-- Dynamic -->
-                </div>
+                <div class="product-grid" id="aliexpress-products"><!-- Dynamic --></div>
             </div>
         </section>
 
         <!-- 5. Fiverr Services -->
         <section id="fiverr-highlights" class="reveal-on-scroll">
             <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="award" style="color: #16a34a"></i> Premium Fiverr Services</h2>
-                    <a href="fiverr.html" class="view-more-btn">Browse All Services <i data-lucide="arrow-right" style="width: 16px;"></i></a>
-                </div>
-                <div class="product-grid" id="fiverr-products">
-                    <!-- Dynamic -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title-group">
+                            <div class="section-label" style="border-color:rgba(22,163,74,0.25); background:rgba(22,163,74,0.06); color:#16a34a;"><i data-lucide="award" style="width:12px;"></i> Fiverr</div>
+                            <h2 class="section-title"><i data-lucide="award" style="color: #16a34a"></i> Premium Fiverr Services</h2>
+                        </div>
+                        <a href="fiverr.html" class="view-more-btn">Browse All Services <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+                    </div>
+                    <div class="product-grid" id="fiverr-products"><!-- Dynamic --></div>
                 </div>
             </div>
         </section>
     </main>
 
-
-        <!-- Blog Section -->
-        <section id="blog-section" class="reveal-on-scroll" style="background: rgba(99, 102, 241, 0.03); padding: 5rem 0;">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title"><i data-lucide="book-open" style="color: var(--primary-color)"></i> Latest From Our Blog</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 3rem;">Expert tips on finding the best deals and services.</p>
-                </div>
-                <div class="blog-grid" id="blog-grid">
-                    <!-- Dynamic -->
-                </div>
-            </div>
-        </section>
-
-        <section id="newsletter" class="reveal-on-scroll">
+    <!-- Blog Section -->
+    <section id="blog-section" class="reveal-on-scroll" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); padding: 6rem 0;">
         <div class="container">
-            <div class="glass" style="padding: 4rem; border-radius: var(--radius-xl); text-align: center; border: 1px solid rgba(99, 102, 241, 0.2); background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(243,244,246,0.8) 100%);">
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <i data-lucide="mail" style="width: 48px; height: 48px; color: var(--primary-color); margin-bottom: 1.5rem;"></i>
-                    <h2 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">Join Our Exclusive Deals Club</h2>
-                    <p style="color: #64748b; margin-bottom: 2.5rem; font-size: 1.1rem;">Subscribe to receive hand-picked deals from Amazon, hidden gems from AliExpress, and premium freelancer tips directly in your inbox.</p>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <input type="email" placeholder="Enter your email address..." style="flex: 1; min-width: 250px; padding: 1.25rem 1.5rem; border-radius: 99px; border: 1px solid #e2e8f0; outline: none; transition: border-color 0.3s ease;">
-                        <button class="btn btn-primary" style="padding: 1.25rem 2.5rem; border-radius: 99px; font-weight: 700; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">Get Early Access</button>
+            <div style="text-align:center; margin-bottom: 3rem;">
+                <div class="section-label" style="display:inline-flex; justify-content:center; background:rgba(99,102,241,0.15); border-color:rgba(99,102,241,0.3); color: #a5b4fc;">
+                    <i data-lucide="book-open" style="width:12px;"></i> Blog
+                </div>
+                <h2 style="font-size: 2rem; font-weight: 800; color: white; margin-top: 0.75rem;">Latest From Our Blog</h2>
+                <p style="color: #64748b; margin-top: 0.5rem; font-size: 1rem;">Expert tips on finding the best deals and services.</p>
+            </div>
+            <div class="blog-grid" id="blog-grid"><!-- Dynamic --></div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section id="newsletter" class="reveal-on-scroll" style="padding: 5rem 0;">
+        <div class="container">
+            <div class="glass" style="padding: 4rem; border-radius: 1.5rem; text-align: center; position:relative; overflow:hidden;">
+                <div style="max-width: 600px; margin: 0 auto; position:relative; z-index:2;">
+                    <div class="section-label" style="display:inline-flex; justify-content:center; background:rgba(99,102,241,0.2); border-color:rgba(99,102,241,0.4); color:#a5b4fc; margin-bottom:1.25rem;">
+                        <i data-lucide="mail" style="width:12px;"></i> Newsletter
+                    </div>
+                    <h2 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem;">Join Our Exclusive Deals Club</h2>
+                    <p style="margin-bottom: 2.5rem; font-size: 1.05rem; line-height: 1.7;">Subscribe to receive hand-picked deals from Amazon, hidden gems from AliExpress, and premium freelancer tips directly in your inbox.</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; max-width: 500px; margin: 0 auto;">
+                        <input type="email" placeholder="Enter your email address..." style="flex: 1; min-width: 220px; padding: 1.1rem 1.5rem; border-radius: 99px; border: 1px solid rgba(99,102,241,0.35); outline: none; font-size: 0.95rem;">
+                        <button class="btn btn-primary" style="padding: 1.1rem 2rem; border-radius: 99px; font-weight: 800; background: linear-gradient(135deg,#6366f1,#8b5cf6); box-shadow: 0 8px 20px rgba(99,102,241,0.4);">Get Early Access</button>
                     </div>
                 </div>
             </div>
@@ -161,14 +570,27 @@
     <script src="js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Load sections with limits for Homepage Preview
             renderPlatformProducts('direct', 'store-products', 4);
             renderPlatformProducts('trending', 'trending-products', 4);
             renderPlatformProducts('amazon', 'amazon-products', 4);
             renderPlatformProducts('aliexpress', 'aliexpress-products', 4);
             renderPlatformProducts('fiverr', 'fiverr-products', 4);
             renderBlogs(3);
-            
+
+            // Animated counter for products
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const el = document.getElementById('counter-products');
+            if (el) {
+                let count = 0;
+                const target = Math.max(products.length, 50);
+                const step = Math.ceil(target / 40);
+                const timer = setInterval(() => {
+                    count = Math.min(count + step, target);
+                    el.innerHTML = count + '<span>+</span>';
+                    if (count >= target) clearInterval(timer);
+                }, 35);
+            }
+
             if (window.lucide) lucide.createIcons();
         });
     </script>
