@@ -656,7 +656,7 @@ function renderStars(rating) {
     return stars;
 }
 
-function renderPlatformProducts(platform, gridId, limit = null) {
+function renderPlatformProducts(platform, gridId, limit = null, filters = {}) {
     const products = JSON.parse(localStorage.getItem('products') || '[]');
     const stats = JSON.parse(localStorage.getItem('click_stats') || '{}');
     const grid = document.getElementById(gridId);
@@ -664,9 +664,24 @@ function renderPlatformProducts(platform, gridId, limit = null) {
     
     grid.innerHTML = '';
     let filtered = products.filter(p => {
-        if (platform === 'featured') return p.featured;
-        if (platform === 'trending') return true; // Will sort by clicks later
-        return p.platform === platform;
+        // Platform Filter
+        let matchesPlatform = false;
+        if (platform === 'featured') matchesPlatform = p.featured;
+        else if (platform === 'trending') matchesPlatform = true; // Will sort by clicks later
+        else matchesPlatform = p.platform === platform;
+
+        if (!matchesPlatform) return false;
+
+        // Dynamic Filters (Country, Category)
+        if (filters.country && filters.country !== 'all') {
+            if (p.country && p.country !== 'all' && p.country !== filters.country) return false;
+        }
+        
+        if (filters.category && filters.category !== 'all') {
+            if (p.category && p.category.toLowerCase() !== filters.category.toLowerCase()) return false;
+        }
+
+        return true;
     });
 
     // Apply sorting: Newest products first
@@ -719,7 +734,8 @@ function loadSampleData() {
             featured: true,
             deal: true,
             link: 'https://amazon.com',
-            category: 'Electronics'
+            category: 'Electronics',
+            country: 'PK'
         },
         {
             id: 'amz-2',
@@ -732,7 +748,8 @@ function loadSampleData() {
             featured: false,
             deal: false,
             link: 'https://amazon.com',
-            category: 'Gadgets'
+            category: 'Gadgets',
+            country: 'US'
         },
         {
             id: 'ali-1',
@@ -745,7 +762,8 @@ function loadSampleData() {
             featured: true,
             deal: true,
             link: 'https://aliexpress.com',
-            category: 'PC Gaming'
+            category: 'PC Gaming',
+            country: 'all'
         }
     ];
     
