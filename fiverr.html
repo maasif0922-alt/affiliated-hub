@@ -30,6 +30,47 @@
             line-clamp: 2;
             overflow: hidden;
         }
+        /* Filter Styles */
+        .filter-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .filter-group label {
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            color: #1e293b;
+            font-size: 0.9375rem;
+            outline: none;
+            cursor: pointer;
+            min-width: 180px;
+            transition: all 0.2s;
+        }
+        .filter-select:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -49,6 +90,24 @@
 
     <section>
         <div class="container">
+            <div class="filter-section animate-fade-in" style="margin-top: -2rem; position: relative; z-index: 10;">
+                <div class="filter-group">
+                    <label><i data-lucide="globe" style="width: 16px; vertical-align: middle;"></i> Country</label>
+                    <select id="country-filter" class="filter-select" onchange="applyFiverrFilters()">
+                        <option value="all">Check All Countries</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i data-lucide="tag" style="width: 16px; vertical-align: middle;"></i> Category</label>
+                    <select id="category-filter" class="filter-select" onchange="applyFiverrFilters()">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+                <div id="filter-results-count" style="margin-left: auto; color: var(--text-muted); font-size: 0.875rem; font-weight: 600;">
+                    Showing all services
+                </div>
+            </div>
+
             <div class="product-grid" id="fiverr-services">
                 <!-- Services will be injected here -->
             </div>
@@ -60,8 +119,49 @@
     <script src="js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            renderPlatformProducts('fiverr', 'fiverr-services');
+            initFiverrFilters();
         });
+
+        function initFiverrFilters() {
+            // Populate filter selects from JS data
+            const settings = getLocalizationSettings();
+            const countries = settings.countries || {};
+            const countrySelect = document.getElementById('country-filter');
+            
+            Object.entries(countries).forEach(([code, name]) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.innerText = name;
+                countrySelect.appendChild(opt);
+            });
+
+            // Categories
+            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            const categorySelect = document.getElementById('category-filter');
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.innerText = cat;
+                categorySelect.appendChild(opt);
+            });
+
+            // Initial render
+            applyFiverrFilters();
+        }
+
+        function applyFiverrFilters() {
+            const country = document.getElementById('country-filter').value;
+            const category = document.getElementById('category-filter').value;
+            
+            renderPlatformProducts('fiverr', 'fiverr-services', null, { country, category });
+            
+            // Update count
+            setTimeout(() => {
+                const count = document.querySelectorAll('#fiverr-services .card').length;
+                const countEl = document.getElementById('filter-results-count');
+                if (countEl) countEl.innerText = `Found ${count} services`;
+            }, 100);
+        }
     </script>
 </body>
 </html>
