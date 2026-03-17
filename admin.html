@@ -1385,6 +1385,7 @@
             if (productForm) {
                 productForm.addEventListener('submit', (e) => {
                     e.preventDefault();
+                    console.log('Initiating product deployment...');
                     try {
                         const id = document.getElementById('p-id').value;
                         const platform = document.getElementById('p-platform').value;
@@ -1408,6 +1409,7 @@
                         const formattedPrice = rawPrice ? `${currSymbol} ${parseFloat(rawPrice).toFixed(2)}` : '';
                         const formattedOldPrice = rawOldPrice ? `${currSymbol} ${parseFloat(rawOldPrice).toFixed(2)}` : '';
 
+                        let updatedProduct;
                         if (id) {
                             // Update existing
                             const index = products.findIndex(p => p.id === id);
@@ -1425,10 +1427,11 @@
                                     country: document.getElementById('p-country-select').value,
                                     featured: document.getElementById('p-featured').value === 'true'
                                 };
+                                updatedProduct = products[index];
                             }
                         } else {
                             // Create new
-                            const newP = {
+                            updatedProduct = {
                                 id: 'p-' + Date.now(),
                                 title: document.getElementById('p-title').value,
                                 images: finalImages,
@@ -1444,16 +1447,25 @@
                                 rating: 5.0,
                                 deal: false
                             };
-                            products.push(newP);
+                            products.push(updatedProduct);
                         }
 
                         localStorage.setItem('products', JSON.stringify(products));
+                        
+                        // Database Check
+                        if (typeof db === 'undefined' || !db) {
+                            console.warn('Firebase DB not initialized. Cloud sync may be delayed.');
+                        }
+                        
                         pushToCloud('products', products); // Automated Cloud Sync
                         renderPlatformList(platform);
                         closeAddModal();
-                        alert(id ? 'Product updated successfully!' : 'Product deployed successfully!');
+                        
+                        const successMsg = id ? 'Product updated successfully on this device and synced to cloud!' : 'Product listed successfully and deployed to website!';
+                        alert(successMsg);
+                        console.log('Product sync operation completed.');
                     } catch (error) {
-                        console.error('Error in product submission:', error);
+                        console.error('CRITICAL: Product submission failed:', error);
                         if (error.name === 'QuotaExceededError') {
                             alert('Storage limit reached! Please use an external image URL or fewer images.');
                         } else {

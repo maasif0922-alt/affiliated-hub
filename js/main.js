@@ -32,7 +32,7 @@ function initApp() {
 let db;
 // Firebase Configuration Utility
 function getFirebaseConfig() {
-    const config = {
+    const hardcodedConfig = {
         apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
         authDomain: "affiliate-20892.firebaseapp.com",
         projectId: "affiliate-20892",
@@ -42,9 +42,26 @@ function getFirebaseConfig() {
         appId: "1:317391475879:web:43d338e8fe09ba46caf782",
         measurementId: "G-8BM90L12CS"
     };
+
+    // Check for user-provided configuration in localStorage
+    const userConfig = JSON.parse(localStorage.getItem('cloud_config') || '{}');
     
-    // Hardcoded production config - prioritize this over old localStorage overrides
-    return config;
+    // If user provided a valid-looking API key, use their config
+    if (userConfig.apiKey && userConfig.apiKey !== 'user-to-provide' && userConfig.apiKey.length > 10) {
+        console.log("Using user-defined cloud configuration");
+        return {
+            apiKey: userConfig.apiKey,
+            authDomain: userConfig.authDomain || (userConfig.projectId + ".firebaseapp.com"),
+            projectId: userConfig.projectId,
+            databaseURL: userConfig.databaseURL,
+            storageBucket: userConfig.storageBucket || (userConfig.projectId + ".appspot.com"),
+            appId: userConfig.appId,
+            messagingSenderId: userConfig.messagingSenderId || ""
+        };
+    }
+    
+    // Fallback to production default
+    return hardcodedConfig;
 }
 
 function initFirebase() {
@@ -55,10 +72,15 @@ function initFirebase() {
     const config = getFirebaseConfig();
     try {
         if (!config.apiKey || config.apiKey === 'user-to-provide') {
-             console.log("Cloud sync is ready but requires Firebase configuration.");
+             console.log("Cloud sync requires Firebase configuration.");
              return;
         }
-        firebase.initializeApp(config);
+        
+        // Prevent multiple initializations
+        if (firebase.apps.length === 0) {
+            firebase.initializeApp(config);
+        }
+        
         db = firebase.database();
         console.log("Firebase initialized successfully");
         syncWithCloud();
@@ -351,7 +373,13 @@ function setLanguage(lang) {
 }
 
 function formatPrice(priceString) {
-    const numericValue = parseFloat(priceString.replace(/[^0-9.]/g, '')) || 0;
+    if (!priceString) return '';
+    // If it's already a number, just use it
+    if (typeof priceString === 'number') return formatPriceRaw(priceString);
+    
+    // Extract numeric part safely (handles commas and symbols)
+    const match = priceString.replace(/,/g, '').match(/[\d.]+/);
+    const numericValue = match ? parseFloat(match[0]) : 0;
     return formatPriceRaw(numericValue);
 }
 
@@ -791,9 +819,13 @@ function createProductCard(product) {
     let discountPct = 0;
     if (product.oldPrice && product.price) {
         // More robust price parsing handles commas and currency symbols
-        const cleanPrice = (str) => parseFloat(str.replace(/,/g, '').match(/[\d.]+/));
-        const current = cleanPrice(product.price);
-        const old = cleanPrice(product.oldPrice);
+        const parsePrice = (str) => {
+            if (!str) return NaN;
+            const match = String(str).replace(/,/g, '').match(/[\d.]+/);
+            return match ? parseFloat(match[0]) : NaN;
+        };
+        const current = parsePrice(product.price);
+        const old = parsePrice(product.oldPrice);
         
         if (!isNaN(current) && !isNaN(old) && old > current) {
             discountPct = Math.round(((old - current) / old) * 100);
