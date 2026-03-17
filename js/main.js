@@ -60,27 +60,18 @@ function initFirebase() {
 
 function syncWithCloud() {
     if (!db) return;
-    console.log("Checking for cloud updates...");
+    console.log("Real-time cloud sync active...");
     
     // Sync Products
     db.ref('products').on('value', (snapshot) => {
         const cloudProducts = snapshot.val();
         if (cloudProducts) {
             const productsArray = Array.isArray(cloudProducts) ? cloudProducts : Object.values(cloudProducts);
-            const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
-            const localIds = new Set(localProducts.map(p => p.id));
-            let changed = false;
-            productsArray.forEach(cp => {
-                if (!localIds.has(cp.id)) {
-                    localProducts.push(cp);
-                    changed = true;
-                }
-            });
-            if (changed) {
-                localStorage.setItem('products', JSON.stringify(localProducts));
-                console.log("Successfully synced " + productsArray.length + " products from cloud");
-                location.reload(); 
-            }
+            localStorage.setItem('products', JSON.stringify(productsArray));
+            console.log("Synced " + productsArray.length + " products from cloud");
+            
+            // Re-render relevant UI components if they exist on the page
+            updatePageUI();
         }
     });
 
@@ -105,10 +96,96 @@ function syncWithCloud() {
              if (JSON.stringify(cloudBlogs) !== JSON.stringify(localBlogs)) {
                  localStorage.setItem('blogs', JSON.stringify(cloudBlogs));
                  console.log("Blogs updated from cloud");
+                 if (typeof renderBlogs === 'function') renderBlogs();
                  if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
              }
         }
     });
+
+    // Sync Categories
+    db.ref('categories').on('value', (snapshot) => {
+        const cloudCats = snapshot.val();
+        if (cloudCats) {
+            localStorage.setItem('categories', JSON.stringify(cloudCats));
+            console.log("Categories updated from cloud");
+            renderNavbar(); // Navbar often contains category links
+        }
+    });
+}
+
+function updatePageUI() {
+    // Check for common grid IDs and re-render them
+    const sectionRenders = {
+        'store-products': () => renderPlatformProducts('direct', 'store-products', 4),
+        'trending-products': () => renderPlatformProducts('trending', 'trending-products', 4),
+        'amazon-products': () => renderPlatformProducts('amazon', 'amazon-products', 4),
+        'aliexpress-products': () => renderPlatformProducts('aliexpress', 'aliexpress-products', 4),
+        'fiverr-products': () => renderPlatformProducts('fiverr', 'fiverr-products', 4),
+        'flash-products': () => {
+            // Re-render flash sale products
+            const allProds = JSON.parse(localStorage.getItem('products') || '[]');
+            const flashProds = allProds.filter(p => p.deal || p.oldPrice).slice(0, 10);
+            const flashContainer = document.getElementById('flash-products');
+            if (flashContainer) {
+                if (flashProds.length === 0) {
+                    flashContainer.innerHTML = '<p style="color:#94a3b8;padding:1rem;">No flash deals right now — check back soon!</p>';
+                } else {
+                    const loc = getLocalizationSettings();
+                    const rate = loc.rates[loc.currency] || 1;
+                    const sym  = loc.symbols[loc.currency] || '$';
+                    flashContainer.innerHTML = '';
+                    flashProds.forEach(p => {
+                        const cleanNum = str => parseFloat((str || '').replace(/[^0-9.]/g,'')) || 0;
+                        const cur = cleanNum(p.price);
+                        const old = cleanNum(p.oldPrice);
+                        const disc = old > cur ? Math.round((old - cur) / old * 100) : 0;
+                        const card = document.createElement('div');
+                        card.className = 'flash-card';
+                        card.innerHTML = `
+                            <div class="flash-img">
+                                <img src="${p.image}" alt="${p.title}">
+                                ${disc > 0 ? `<span class="flash-disc">-${disc}%</span>` : ''}
+                                <button class="share-btn-mini" onclick="shareProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')" title="Share Product" style="position: absolute; top: 0.5rem; right: 0.5rem; z-index: 10;">
+                                    <i data-lucide="share-2" style="width: 14px;"></i>
+                                </button>
+                            </div>
+                            <a href="product-detail.html?id=${p.id}" style="text-decoration: none; color: inherit;">
+                                <div class="flash-info">
+                                    <div class="ftitle">${p.title}</div>
+                                    <div class="fprice">${sym} ${(cur * rate).toFixed(2)}</div>
+                                    ${old > 0 ? `<div class="foldprice">${sym} ${(old * rate).toFixed(2)}</div>` : ''}
+                                </div>
+                            </a>`;
+                        flashContainer.appendChild(card);
+                    });
+                }
+            }
+        },
+        'dropshipping-grid': () => {
+             const country = document.getElementById('country-filter')?.value || 'all';
+             const category = document.getElementById('category-filter')?.value || 'all';
+             renderPlatformProducts('direct', 'dropshipping-grid', null, { country, category });
+        },
+        'store-all-products': () => renderPlatformProducts('direct', 'store-all-products'),
+        'amazon-all-products': () => renderPlatformProducts('amazon', 'amazon-all-products'),
+        'aliexpress-all-products': () => renderPlatformProducts('aliexpress', 'aliexpress-all-products'),
+        'fiverr-all-products': () => renderPlatformProducts('fiverr', 'fiverr-all-products')
+    };
+
+    for (const [id, renderFunc] of Object.entries(sectionRenders)) {
+        if (document.getElementById(id)) {
+            renderFunc();
+        }
+    }
+
+    // Refresh Lucide icons if applicable
+    if (window.lucide) lucide.createIcons();
+    
+    // Update counter if on index
+    if (document.getElementById('counter-p')) {
+        const prods = JSON.parse(localStorage.getItem('products') || '[]');
+        document.getElementById('counter-p').innerHTML = prods.length + '<s2>+</s2>';
+    }
 }
 
 
