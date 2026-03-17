@@ -212,8 +212,12 @@ function updatePageUI() {
 function pushToCloud(path, data) {
     if (db) {
         db.ref(path).set(data)
-          .then(() => console.log("Cloud sync successful: " + path))
-          .catch((err) => console.error("Cloud sync failed: ", err));
+          .then(() => console.log(`Cloud sync successful for path: "${path}"`))
+          .catch((err) => {
+              console.error(`Cloud sync failed for path: "${path}". Error details:`, err);
+          });
+    } else {
+        console.warn(`Cloud sync skipped for "${path}" (Database not initialized)`);
     }
 }
 

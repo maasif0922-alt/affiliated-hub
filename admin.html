@@ -1016,6 +1016,10 @@
             const filtered = products.filter(p => p.platform === platform);
             
             const list = document.getElementById(`${platform}-product-list`);
+            if (!list) {
+                console.warn(`Product list element for platform "${platform}" not found.`);
+                return;
+            }
             list.innerHTML = '';
             
             filtered.forEach(p => {
@@ -1380,75 +1384,83 @@
             const productForm = document.getElementById('shared-product-form');
             if (productForm) {
                 productForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const id = document.getElementById('p-id').value;
-                const platform = document.getElementById('p-platform').value;
-                const externalUrl = document.getElementById('p-image-url').value;
-                
-                const finalImages = [...currentUploadedImages];
-                if (externalUrl && !finalImages.includes(externalUrl)) finalImages.unshift(externalUrl);
+                    e.preventDefault();
+                    try {
+                        const id = document.getElementById('p-id').value;
+                        const platform = document.getElementById('p-platform').value;
+                        const externalUrl = document.getElementById('p-image-url').value;
+                        
+                        const finalImages = [...currentUploadedImages];
+                        if (externalUrl && !finalImages.includes(externalUrl)) finalImages.unshift(externalUrl);
 
-                if (finalImages.length === 0) {
-                    alert('Please upload at least one image or provide a URL.');
-                    return;
-                }
+                        if (finalImages.length === 0) {
+                            alert('Please upload at least one image or provide a URL.');
+                            return;
+                        }
 
-                const products = JSON.parse(localStorage.getItem('products') || '[]');
-                
-                const CURRENCY_SYMBOLS = { USD: '$', AED: 'AED', SAR: 'SAR', PKR: 'Rs', INR: '₹' };
-                const selectedCurrency = document.getElementById('p-currency').value;
-                const currSymbol = CURRENCY_SYMBOLS[selectedCurrency] || '$';
-                const rawPrice = document.getElementById('p-price').value;
-                const rawOldPrice = document.getElementById('p-old-price').value;
-                const formattedPrice = rawPrice ? `${currSymbol} ${parseFloat(rawPrice).toFixed(2)}` : '';
-                const formattedOldPrice = rawOldPrice ? `${currSymbol} ${parseFloat(rawOldPrice).toFixed(2)}` : '';
+                        const products = JSON.parse(localStorage.getItem('products') || '[]');
+                        
+                        const CURRENCY_SYMBOLS = { USD: '$', AED: 'AED', SAR: 'SAR', PKR: 'Rs', INR: '₹' };
+                        const selectedCurrency = document.getElementById('p-currency').value;
+                        const currSymbol = CURRENCY_SYMBOLS[selectedCurrency] || '$';
+                        const rawPrice = document.getElementById('p-price').value;
+                        const rawOldPrice = document.getElementById('p-old-price').value;
+                        const formattedPrice = rawPrice ? `${currSymbol} ${parseFloat(rawPrice).toFixed(2)}` : '';
+                        const formattedOldPrice = rawOldPrice ? `${currSymbol} ${parseFloat(rawOldPrice).toFixed(2)}` : '';
 
-                if (id) {
-                    // Update existing
-                    const index = products.findIndex(p => p.id === id);
-                    if (index !== -1) {
-                        products[index] = {
-                            ...products[index],
-                            title: document.getElementById('p-title').value,
-                            images: finalImages,
-                            image: finalImages[0],
-                            link: document.getElementById('p-link').value,
-                            price: formattedPrice,
-                            oldPrice: formattedOldPrice,
-                            priceCurrency: selectedCurrency,
-                            category: document.getElementById('p-cat-select').value,
-                            country: document.getElementById('p-country-select').value,
-                            featured: document.getElementById('p-featured').value === 'true'
-                        };
+                        if (id) {
+                            // Update existing
+                            const index = products.findIndex(p => p.id === id);
+                            if (index !== -1) {
+                                products[index] = {
+                                    ...products[index],
+                                    title: document.getElementById('p-title').value,
+                                    images: finalImages,
+                                    image: finalImages[0],
+                                    link: document.getElementById('p-link').value,
+                                    price: formattedPrice,
+                                    oldPrice: formattedOldPrice,
+                                    priceCurrency: selectedCurrency,
+                                    category: document.getElementById('p-cat-select').value,
+                                    country: document.getElementById('p-country-select').value,
+                                    featured: document.getElementById('p-featured').value === 'true'
+                                };
+                            }
+                        } else {
+                            // Create new
+                            const newP = {
+                                id: 'p-' + Date.now(),
+                                title: document.getElementById('p-title').value,
+                                images: finalImages,
+                                image: finalImages[0],
+                                link: document.getElementById('p-link').value,
+                                platform: platform,
+                                price: formattedPrice,
+                                oldPrice: formattedOldPrice,
+                                priceCurrency: selectedCurrency,
+                                category: document.getElementById('p-cat-select').value,
+                                country: document.getElementById('p-country-select').value,
+                                featured: document.getElementById('p-featured').value === 'true',
+                                rating: 5.0,
+                                deal: false
+                            };
+                            products.push(newP);
+                        }
+
+                        localStorage.setItem('products', JSON.stringify(products));
+                        pushToCloud('products', products); // Automated Cloud Sync
+                        renderPlatformList(platform);
+                        closeAddModal();
+                        alert(id ? 'Product updated successfully!' : 'Product deployed successfully!');
+                    } catch (error) {
+                        console.error('Error in product submission:', error);
+                        if (error.name === 'QuotaExceededError') {
+                            alert('Storage limit reached! Please use an external image URL or fewer images.');
+                        } else {
+                            alert('Error deploying product: ' + error.message);
+                        }
                     }
-                } else {
-                    // Create new
-                    const newP = {
-                        id: 'p-' + Date.now(),
-                        title: document.getElementById('p-title').value,
-                        images: finalImages,
-                        image: finalImages[0],
-                        link: document.getElementById('p-link').value,
-                        platform: platform,
-                        price: formattedPrice,
-                        oldPrice: formattedOldPrice,
-                        priceCurrency: selectedCurrency,
-                        category: document.getElementById('p-cat-select').value,
-                        country: document.getElementById('p-country-select').value,
-                        featured: document.getElementById('p-featured').value === 'true',
-                        rating: 5.0,
-                        deal: false
-                    };
-                    products.push(newP);
-                }
-
-                localStorage.setItem('products', JSON.stringify(products));
-                pushToCloud('products', products); // Automated Cloud Sync
-                renderPlatformList(platform);
-                closeAddModal();
-                alert(id ? 'Product updated successfully!' : 'Product deployed successfully!');
-
-            });
+                });
             }
 
             // Blog Form
