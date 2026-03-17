@@ -53,62 +53,47 @@
 
 /* ---- Hero Banner ---- */
 .hero-wrap {
-    background: linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0d0d2b 100%);
-    background-size:300% 300%;
-    animation: gradBG 10s ease infinite;
-    position:relative; overflow:hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 0;
 }
 .hero-wrap::before {
-    content:''; position:absolute; inset:0;
-    background:
-        radial-gradient(ellipse 70% 55% at 50% 0%,rgba(99,102,241,.22) 0%,transparent 70%),
-        radial-gradient(ellipse 50% 40% at 90% 80%,rgba(236,72,153,.12) 0%,transparent 60%);
-}
-.hero-grid {
-    position:absolute; inset:0;
-    background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px);
-    background-size:55px 55px;
-    mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15), transparent 70%);
 }
 .hero-layout {
-    position:relative; z-index:5;
-    display:grid; grid-template-columns:1fr 360px;
-    gap:2rem; align-items:center;
-    padding:4rem 0 4.5rem;
+    position: relative; z-index: 5;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
 }
-@media(max-width:900px){
-    .hero-layout{grid-template-columns:1fr; padding:3rem 0;}
-    .hero-side-panel{display:none;}
-}
-.hero-left { display:flex; flex-direction:column; gap:1.5rem; }
 .hero-pill {
-    display:inline-flex; align-items:center; gap:.5rem;
-    background:rgba(99,102,241,.18); border:1px solid rgba(99,102,241,.4);
-    color:#a5b4fc; font-size:.65rem; font-weight:800;
-    letter-spacing:.12em; text-transform:uppercase;
-    padding:.35rem 1rem; border-radius:99px; width:fit-content;
-    animation: fadeUp .5s ease forwards;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.4rem 1.2rem; border-radius: 99px; margin-bottom: 2rem;
 }
-.hero-pill .dot { width:7px;height:7px;background:#a5b4fc;border-radius:50%; animation:flash 1s infinite; }
 .hero-h1 {
-    font-family:'Outfit',sans-serif; font-size:3.6rem; font-weight:900;
-    line-height:1.08; color:white; letter-spacing:-.02em;
-    animation: fadeUp .6s .1s ease both;
+    font-family: 'Outfit', sans-serif; font-size: 4rem; font-weight: 900;
+    line-height: 1.1; color: white; letter-spacing: -0.02em; margin-bottom: 1.5rem;
 }
 .hero-h1 .grad {
-    background:linear-gradient(135deg,#a5b4fc 0%,#f9a8d4 45%,#fbbf24 100%);
-    background-size:200% 200%; animation:gradBG 4s ease infinite;
-    -webkit-background-clip:text; background-clip:text;
-    -webkit-text-fill-color:transparent;
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 .hero-sub {
-    color:#94a3b8; font-size:1.05rem; line-height:1.75; max-width:560px;
-    animation: fadeUp .6s .2s ease both;
+    color: #94a3b8; font-size: 1.15rem; line-height: 1.7; margin-bottom: 2.5rem;
 }
 .hero-cta-row {
-    display:flex; gap:1rem; flex-wrap:wrap;
-    animation: fadeUp .6s .3s ease both;
+    display: flex; gap: 1rem; justify-content: center;
+}
+@media(max-width: 768px) {
+    .hero-h1 { font-size: 2.5rem; }
+    .hero-sub { font-size: 1rem; }
+    .hero-cta-row { flex-direction: column; }
 }
 .btn-hero-primary {
     display:inline-flex; align-items:center; gap:.5rem;
@@ -445,53 +430,19 @@
 
 <!-- ③ Hero Section -->
 <div class="hero-wrap">
-    <div class="hero-grid"></div>
     <div class="container">
         <div class="hero-layout">
-            <!-- Left -->
-            <div class="hero-left">
-                <div class="hero-pill"><div class="dot"></div> Exclusive Drops &amp; Premium Deals</div>
-                <h1 class="hero-h1">
-                    Your Global<br><span class="grad">Affiliate</span> &amp;<br>Shopping Hub
-                </h1>
-                <p class="hero-sub">Shop hand-picked products from Amazon, AliExpress, Fiverr &amp; our Direct Store — at the best prices, delivered worldwide.</p>
-                <div class="hero-cta-row">
-                    <a href="register.html" class="btn-hero-primary">
-                        <i data-lucide="user-plus" style="width:18px;"></i> Create Account
-                    </a>
-                    <a href="dropshipping.html" class="btn-hero-outline">
-                        <i data-lucide="shopping-bag" style="width:18px;"></i> Direct Store
-                    </a>
-                </div>
-                <div class="hero-trust">
-                    <div class="trust-chip"><i data-lucide="shield-check" style="width:16px;"></i> Secure Checkout</div>
-                    <div class="trust-chip"><i data-lucide="truck" style="width:16px;"></i> Global Shipping</div>
-                    <div class="trust-chip"><i data-lucide="refresh-cw" style="width:16px;"></i> 30-Day Returns</div>
-                    <div class="trust-chip"><i data-lucide="award" style="width:16px;"></i> Verified Quality</div>
-                </div>
-            </div>
-            <!-- Right: Side Panel -->
-            <div class="hero-side-panel">
-                <div class="side-panel-title">🛍️ Browse Platforms</div>
-                <a href="amazon.html" class="side-link">
-                    <div class="side-icon amz"><i data-lucide="shopping-cart" style="width:20px;"></i></div>
-                    <div class="side-text"><div class="name">Amazon</div><div class="desc">Top-rated products</div></div>
-                    <i data-lucide="chevron-right" style="width:14px;color:#475569;margin-left:auto;"></i>
+            <div class="hero-pill">Verified Global Affiliate Hub</div>
+            <h1 class="hero-h1">
+                Your Global<br><span class="grad">Affiliate</span> Hub
+            </h1>
+            <p class="hero-sub">Shop hand-picked products from Amazon, AliExpress, Fiverr & our Direct Store — at the best prices, delivered worldwide.</p>
+            <div class="hero-cta-row">
+                <a href="register.html" class="btn-hero-primary">
+                    <i data-lucide="user-plus" style="width:18px;"></i> Create Account
                 </a>
-                <a href="aliexpress.html" class="side-link">
-                    <div class="side-icon ali"><i data-lucide="globe" style="width:20px;"></i></div>
-                    <div class="side-text"><div class="name">AliExpress</div><div class="desc">Best value finds</div></div>
-                    <i data-lucide="chevron-right" style="width:14px;color:#475569;margin-left:auto;"></i>
-                </a>
-                <a href="fiverr.html" class="side-link">
-                    <div class="side-icon fvr"><i data-lucide="briefcase" style="width:20px;"></i></div>
-                    <div class="side-text"><div class="name">Fiverr</div><div class="desc">Pro freelance services</div></div>
-                    <i data-lucide="chevron-right" style="width:14px;color:#475569;margin-left:auto;"></i>
-                </a>
-                <a href="dropshipping.html" class="side-link">
-                    <div class="side-icon str"><i data-lucide="store" style="width:20px;"></i></div>
-                    <div class="side-text"><div class="name">Direct Store</div><div class="desc">Our own products</div></div>
-                    <i data-lucide="chevron-right" style="width:14px;color:#475569;margin-left:auto;"></i>
+                <a href="dropshipping.html" class="btn-hero-outline">
+                    <i data-lucide="shopping-bag" style="width:18px;"></i> Direct Store
                 </a>
             </div>
         </div>

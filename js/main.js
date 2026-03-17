@@ -8,14 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
-    console.log('Affiliate Website Initialized');
     
     // Force clear old local storage cache (v2.1)
     if (localStorage.getItem('app_version') !== '2.1') {
         localStorage.removeItem('cloud_config'); // Clear potentially wrong user-entered Firebase configs
         localStorage.removeItem('app_initialized');
         localStorage.setItem('app_version', '2.1');
-        console.log('Legacy config and cache cleared');
     }
 
     trackPageView(); // Analytics
@@ -32,7 +30,7 @@ function initApp() {
 let db;
 // Firebase Configuration Utility
 function getFirebaseConfig() {
-    const hardcodedConfig = {
+    const config = {
         apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
         authDomain: "affiliate-20892.firebaseapp.com",
         projectId: "affiliate-20892",
@@ -42,57 +40,30 @@ function getFirebaseConfig() {
         appId: "1:317391475879:web:43d338e8fe09ba46caf782",
         measurementId: "G-8BM90L12CS"
     };
-
-    // Check for user-provided configuration in localStorage
-    const userConfig = JSON.parse(localStorage.getItem('cloud_config') || '{}');
     
-    // If user provided a valid-looking API key, use their config
-    if (userConfig.apiKey && userConfig.apiKey !== 'user-to-provide' && userConfig.apiKey.length > 10) {
-        console.log("Using user-defined cloud configuration");
-        return {
-            apiKey: userConfig.apiKey,
-            authDomain: userConfig.authDomain || (userConfig.projectId + ".firebaseapp.com"),
-            projectId: userConfig.projectId,
-            databaseURL: userConfig.databaseURL,
-            storageBucket: userConfig.storageBucket || (userConfig.projectId + ".appspot.com"),
-            appId: userConfig.appId,
-            messagingSenderId: userConfig.messagingSenderId || ""
-        };
-    }
-    
-    // Fallback to production default
-    return hardcodedConfig;
+    // Hardcoded production config - prioritize this over old localStorage overrides
+    return config;
 }
 
 function initFirebase() {
     if (typeof firebase === 'undefined') {
-        console.warn("Firebase SDK not loaded");
         return;
     }
     const config = getFirebaseConfig();
     try {
         if (!config.apiKey || config.apiKey === 'user-to-provide') {
-             console.log("Cloud sync requires Firebase configuration.");
              return;
         }
-        
-        // Prevent multiple initializations
-        if (firebase.apps.length === 0) {
-            firebase.initializeApp(config);
-        }
-        
+        firebase.initializeApp(config);
         db = firebase.database();
-        console.log("Firebase initialized successfully");
         syncWithCloud();
     } catch (e) {
-        console.warn("Firebase initialization error:", e);
     }
 }
 
 
 function syncWithCloud() {
     if (!db) return;
-    console.log("Real-time cloud sync active...");
     
     // Visual Indicator for Sync
     const updateSyncStatus = (active) => {
@@ -110,7 +81,6 @@ function syncWithCloud() {
         if (cloudProducts) {
             const productsArray = Array.isArray(cloudProducts) ? cloudProducts : Object.values(cloudProducts);
             localStorage.setItem('products', JSON.stringify(productsArray));
-            console.log("Synced " + productsArray.length + " products from cloud");
             
             // Re-render relevant UI components if they exist on the page
             updatePageUI();
@@ -124,7 +94,6 @@ function syncWithCloud() {
              const localSettings = JSON.parse(localStorage.getItem('site_settings') || '{}');
              if (JSON.stringify(cloudSettings) !== JSON.stringify(localSettings)) {
                  localStorage.setItem('site_settings', JSON.stringify(cloudSettings));
-                 console.log("Site settings updated from cloud");
                  applySiteSettings();
              }
         }
@@ -137,7 +106,6 @@ function syncWithCloud() {
              const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
              if (JSON.stringify(cloudBlogs) !== JSON.stringify(localBlogs)) {
                  localStorage.setItem('blogs', JSON.stringify(cloudBlogs));
-                 console.log("Blogs updated from cloud");
                  if (typeof renderBlogs === 'function') renderBlogs();
                  if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
              }
@@ -149,7 +117,6 @@ function syncWithCloud() {
         const cloudCats = snapshot.val();
         if (cloudCats) {
             localStorage.setItem('categories', JSON.stringify(cloudCats));
-            console.log("Categories updated from cloud");
             renderNavbar(); // Navbar often contains category links
         }
     });
@@ -234,12 +201,9 @@ function updatePageUI() {
 function pushToCloud(path, data) {
     if (db) {
         db.ref(path).set(data)
-          .then(() => console.log(`Cloud sync successful for path: "${path}"`))
           .catch((err) => {
-              console.error(`Cloud sync failed for path: "${path}". Error details:`, err);
           });
     } else {
-        console.warn(`Cloud sync skipped for "${path}" (Database not initialized)`);
     }
 }
 
@@ -373,13 +337,7 @@ function setLanguage(lang) {
 }
 
 function formatPrice(priceString) {
-    if (!priceString) return '';
-    // If it's already a number, just use it
-    if (typeof priceString === 'number') return formatPriceRaw(priceString);
-    
-    // Extract numeric part safely (handles commas and symbols)
-    const match = priceString.replace(/,/g, '').match(/[\d.]+/);
-    const numericValue = match ? parseFloat(match[0]) : 0;
+    const numericValue = parseFloat(priceString.replace(/[^0-9.]/g, '')) || 0;
     return formatPriceRaw(numericValue);
 }
 
@@ -819,13 +777,9 @@ function createProductCard(product) {
     let discountPct = 0;
     if (product.oldPrice && product.price) {
         // More robust price parsing handles commas and currency symbols
-        const parsePrice = (str) => {
-            if (!str) return NaN;
-            const match = String(str).replace(/,/g, '').match(/[\d.]+/);
-            return match ? parseFloat(match[0]) : NaN;
-        };
-        const current = parsePrice(product.price);
-        const old = parsePrice(product.oldPrice);
+        const cleanPrice = (str) => parseFloat(str.replace(/,/g, '').match(/[\d.]+/));
+        const current = cleanPrice(product.price);
+        const old = cleanPrice(product.oldPrice);
         
         if (!isNaN(current) && !isNaN(old) && old > current) {
             discountPct = Math.round(((old - current) / old) * 100);
