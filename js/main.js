@@ -28,22 +28,28 @@ function initApp() {
 function syncFromConfig() {
     if (typeof CONFIG === 'undefined') return;
 
-    // Check version or force sync if needed
-    const lastSync = localStorage.getItem('last_config_sync');
-    const currentSync = CONFIG.timestamp || Date.now(); // We can add a timestamp to config later
+    // Check version to force sync
+    const lastSyncVersion = localStorage.getItem('config_version');
+    const currentVersion = CONFIG.VERSION || '1.0.0';
 
-    // For now, let's always sync if CONFIG exists to ensure deployment works
-    if (CONFIG.products) {
-        localStorage.setItem('products', JSON.stringify(CONFIG.products));
+    // If version is different, force a full refresh of local storage
+    if (lastSyncVersion !== currentVersion) {
+        console.log('New config version detected. Syncing...');
+        if (CONFIG.products) {
+            localStorage.setItem('products', JSON.stringify(CONFIG.products));
+        }
+        if (CONFIG.platform_filters) {
+            localStorage.setItem('platform_filters', JSON.stringify(CONFIG.platform_filters));
+        }
+        if (CONFIG.site_settings) {
+            localStorage.setItem('site_settings', JSON.stringify(CONFIG.site_settings));
+        }
+        localStorage.setItem('config_version', currentVersion);
+        localStorage.setItem('last_config_sync', Date.now());
+        
+        // Refresh UI if we are on a page that needs it
+        if (typeof updatePageUI === 'function') updatePageUI();
     }
-    if (CONFIG.platform_filters) {
-        localStorage.setItem('platform_filters', JSON.stringify(CONFIG.platform_filters));
-    }
-    if (CONFIG.site_settings) {
-        localStorage.setItem('site_settings', JSON.stringify(CONFIG.site_settings));
-    }
-
-    localStorage.setItem('last_config_sync', currentSync);
 }
 
 // --- Firebase Cloud Sync ---
