@@ -20,107 +20,13 @@ function initApp() {
     renderNavbar();
     renderFooter();
     handleSearch();
-    initFirebase();
     applySiteSettings();
     updateCartBadge();
     initScrollReveal();
 }
 
 // --- Firebase Cloud Sync ---
-let db;
-// Firebase Configuration Utility
-function getFirebaseConfig() {
-    const config = {
-        apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
-        authDomain: "affiliate-20892.firebaseapp.com",
-        projectId: "affiliate-20892",
-        databaseURL: "https://affiliate-20892-default-rtdb.firebaseio.com",
-        storageBucket: "affiliate-20892.firebasestorage.app",
-        messagingSenderId: "317391475879",
-        appId: "1:317391475879:web:43d338e8fe09ba46caf782",
-        measurementId: "G-8BM90L12CS"
-    };
-    
-    // Hardcoded production config - prioritize this over old localStorage overrides
-    return config;
-}
-
-function initFirebase() {
-    if (typeof firebase === 'undefined') {
-        return;
-    }
-    const config = getFirebaseConfig();
-    try {
-        if (!config.apiKey || config.apiKey === 'user-to-provide') {
-             return;
-        }
-        firebase.initializeApp(config);
-        db = firebase.database();
-        syncWithCloud();
-    } catch (e) {
-    }
-}
-
-
-function syncWithCloud() {
-    if (!db) return;
-    
-    // Visual Indicator for Sync
-    const updateSyncStatus = (active) => {
-        const dot = document.getElementById('sync-indicator');
-        if (dot) {
-            dot.style.background = active ? '#22c55e' : '#ef4444';
-            dot.title = active ? 'Real-time Sync Active' : 'Sync Disconnected';
-        }
-    };
-    updateSyncStatus(true);
-    
-    // Sync Products
-    db.ref('products').on('value', (snapshot) => {
-        const cloudProducts = snapshot.val();
-        if (cloudProducts) {
-            const productsArray = Array.isArray(cloudProducts) ? cloudProducts : Object.values(cloudProducts);
-            localStorage.setItem('products', JSON.stringify(productsArray));
-            
-            // Re-render relevant UI components if they exist on the page
-            updatePageUI();
-        }
-    });
-
-    // Sync Site Settings
-    db.ref('site_settings').on('value', (snapshot) => {
-        const cloudSettings = snapshot.val();
-        if (cloudSettings) {
-             const localSettings = JSON.parse(localStorage.getItem('site_settings') || '{}');
-             if (JSON.stringify(cloudSettings) !== JSON.stringify(localSettings)) {
-                 localStorage.setItem('site_settings', JSON.stringify(cloudSettings));
-                 applySiteSettings();
-             }
-        }
-    });
-
-    // Sync Blogs
-    db.ref('blogs').on('value', (snapshot) => {
-        const cloudBlogs = snapshot.val();
-        if (cloudBlogs) {
-             const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-             if (JSON.stringify(cloudBlogs) !== JSON.stringify(localBlogs)) {
-                 localStorage.setItem('blogs', JSON.stringify(cloudBlogs));
-                 if (typeof renderBlogs === 'function') renderBlogs();
-                 if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
-             }
-        }
-    });
-
-    // Sync Categories
-    db.ref('categories').on('value', (snapshot) => {
-        const cloudCats = snapshot.val();
-        if (cloudCats) {
-            localStorage.setItem('categories', JSON.stringify(cloudCats));
-            renderNavbar(); // Navbar often contains category links
-        }
-    });
-}
+// Removed as per user request. Application now relies purely on Local Storage and "Push to Live" mechanism.
 
 function updatePageUI() {
     // Check for common grid IDs and re-render them
@@ -199,12 +105,8 @@ function updatePageUI() {
 
 
 function pushToCloud(path, data) {
-    if (db) {
-        db.ref(path).set(data)
-          .catch((err) => {
-          });
-    } else {
-    }
+    // Firebase removed as per user request. 
+    // Data is only stored locally until "Push to Live" is used.
 }
 
 
