@@ -960,7 +960,7 @@
         </main>
     </div>
 
-    <script src="js/main.js?v=4"></script>
+    <script src="js/main.js?v=5"></script>
     <script>
         // Auth Guard
         if (sessionStorage.getItem('admin_auth') !== 'true') {
@@ -1383,19 +1383,33 @@
             // Shared Product Form
             const productForm = document.getElementById('shared-product-form');
             if (productForm) {
-                productForm.addEventListener('submit', (e) => {
+                // Ensure we don't attach multiple listeners if setupFormHandlers is called again
+                productForm.onsubmit = async (e) => {
                     e.preventDefault();
-                    console.log('Initiating product deployment...');
+                    
+                    const submitBtn = productForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerText;
+                    
+                    console.log('--- Product Deployment Started ---');
+                    
                     try {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = 'Deploying to Website...';
+
                         const id = document.getElementById('p-id').value;
                         const platform = document.getElementById('p-platform').value;
+                        const title = document.getElementById('p-title').value;
                         const externalUrl = document.getElementById('p-image-url').value;
                         
+                        console.log(`Target Platform: ${platform}, Title: ${title}`);
+
                         const finalImages = [...currentUploadedImages];
                         if (externalUrl && !finalImages.includes(externalUrl)) finalImages.unshift(externalUrl);
 
                         if (finalImages.length === 0) {
-                            alert('Please upload at least one image or provide a URL.');
+                            alert('Required: Please upload at least one image or provide an External Image URL.');
+                            submitBtn.disabled = false;
+                            submitBtn.innerText = originalBtnText;
                             return;
                         }
 
@@ -1404,10 +1418,20 @@
                         const CURRENCY_SYMBOLS = { USD: '$', AED: 'AED', SAR: 'SAR', PKR: 'Rs', INR: '₹' };
                         const selectedCurrency = document.getElementById('p-currency').value;
                         const currSymbol = CURRENCY_SYMBOLS[selectedCurrency] || '$';
+                        
                         const rawPrice = document.getElementById('p-price').value;
                         const rawOldPrice = document.getElementById('p-old-price').value;
-                        const formattedPrice = rawPrice ? `${currSymbol} ${parseFloat(rawPrice).toFixed(2)}` : '';
-                        const formattedOldPrice = rawOldPrice ? `${currSymbol} ${parseFloat(rawOldPrice).toFixed(2)}` : '';
+                        
+                        const parseSafe = (val) => {
+                            const n = parseFloat(val);
+                            return isNaN(n) ? null : n.toFixed(2);
+                        };
+
+                        const pFormatted = parseSafe(rawPrice);
+                        const pOldFormatted = parseSafe(rawOldPrice);
+
+                        const formattedPrice = pFormatted ? `${currSymbol} ${pFormatted}` : '';
+                        const formattedOldPrice = pOldFormatted ? `${currSymbol} ${pOldFormatted}` : '';
 
                         let updatedProduct;
                         if (id) {
@@ -1416,7 +1440,7 @@
                             if (index !== -1) {
                                 products[index] = {
                                     ...products[index],
-                                    title: document.getElementById('p-title').value,
+                                    title: title,
                                     images: finalImages,
                                     image: finalImages[0],
                                     link: document.getElementById('p-link').value,
@@ -1433,7 +1457,7 @@
                             // Create new
                             updatedProduct = {
                                 id: 'p-' + Date.now(),
-                                title: document.getElementById('p-title').value,
+                                title: title,
                                 images: finalImages,
                                 image: finalImages[0],
                                 link: document.getElementById('p-link').value,
@@ -1450,29 +1474,33 @@
                             products.push(updatedProduct);
                         }
 
+                        console.log('Updating LocalStorage...');
                         localStorage.setItem('products', JSON.stringify(products));
                         
-                        // Database Check
+                        console.log('Checking Firebase Sync Status...');
                         if (typeof db === 'undefined' || !db) {
-                            console.warn('Firebase DB not initialized. Cloud sync may be delayed.');
+                            console.warn('Firebase DB not initialized. Cloud sync may be skipped or delayed.');
+                            // We still alert success because it's saved locally
                         }
                         
-                        pushToCloud('products', products); // Automated Cloud Sync
+                        console.log('Pushing to Cloud...');
+                        pushToCloud('products', products); 
+                        
                         renderPlatformList(platform);
                         closeAddModal();
                         
-                        const successMsg = id ? 'Product updated successfully on this device and synced to cloud!' : 'Product listed successfully and deployed to website!';
+                        const successMsg = id ? 'Listing Updated Successfully!' : 'Success! Product deployed and listed on website.';
                         alert(successMsg);
-                        console.log('Product sync operation completed.');
+                        console.log('--- Deployment Successfully Finished ---');
+
                     } catch (error) {
-                        console.error('CRITICAL: Product submission failed:', error);
-                        if (error.name === 'QuotaExceededError') {
-                            alert('Storage limit reached! Please use an external image URL or fewer images.');
-                        } else {
-                            alert('Error deploying product: ' + error.message);
-                        }
+                        console.error('FATAL ERROR DURING DEPLOYMENT:', error);
+                        alert('Error: ' + error.message + '\n\nCheck browser console for full stack trace.');
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = originalBtnText;
                     }
-                });
+                };
             }
 
             // Blog Form
