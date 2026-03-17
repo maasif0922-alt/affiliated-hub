@@ -370,6 +370,9 @@
                     <li><a onclick="showTab('categories')" id="tab-categories"><i data-lucide="filter"></i> Filters</a></li>
                     <li><a onclick="showTab('settings')" id="tab-settings"><i data-lucide="settings"></i> Settings</a></li>
                     
+                    <li style="margin-top: 1.5rem; padding: 0 1.25rem; font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Deployment</li>
+                    <li><a onclick="showTab('push-to-live')" id="tab-push-to-live" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><i data-lucide="rocket"></i> PUSH TO LIVE</a></li>
+                    
                     <li style="margin-top: 2rem;"><a onclick="logout()" style="color: #ef4444;"><i data-lucide="log-out"></i> Logout</a></li>
                 </ul>
             </nav>
@@ -748,6 +751,34 @@
                     </form>
                 </div>
             </div>
+
+            <!-- TAB: PUSH TO LIVE (DARK MODE VIBE) -->
+            <div id="content-push-to-live" class="admin-tab-content animate-fade-in">
+                <div style="background: #0f172a; padding: 3rem; border-radius: 20px; color: white; border: 1px solid #1e293b; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                    <header style="margin-bottom: 2rem;">
+                        <h1 style="font-size: 2.25rem; font-weight: 800; color: #22c55e; margin-bottom: 1rem;">Export System Data</h1>
+                        <p style="color: #94a3b8; font-size: 1.1rem; line-height: 1.6;">Use this tool to generate a deployment code snippet. Copy this code and provide it to your AI assistant (Antigravity) to push your changes live to both the website and mobile apps.</p>
+                    </header>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button onclick="generateDeploymentCode(this)" class="btn" style="background: #22c55e; color: #000; font-weight: 800; padding: 1rem 2rem; border: none; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem; transition: transform 0.2s;">
+                            <i data-lucide="zap"></i> Generate Deployment Code
+                        </button>
+                        <button onclick="copyToClipboard(this)" class="btn" style="background: transparent; color: white; border: 2px solid #334155; font-weight: 600; padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
+                            <i data-lucide="copy"></i> Copy to Clipboard
+                        </button>
+                    </div>
+
+                    <div>
+                        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.75rem; font-weight: 600;">Generated Deployment Code</p>
+                        <div style="background: #020617; border: 2px solid #22c55e; border-radius: 16px; padding: 1.5rem; position: relative; min-height: 400px; display: flex; flex-direction: column;">
+                            <textarea id="deployment-code-area" readonly 
+                                style="background: transparent; border: none; color: #4ade80; width: 100%; height: 100%; min-height: 400px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 0.9rem; resize: none; outline: none; white-space: pre;" 
+                                placeholder="Click generate to see the code..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -785,8 +816,44 @@
             document.getElementById(`tab-${id}`).classList.add('active');
             
             if (id === 'blogs') renderAdminBlogList();
-            if (['amazon', 'aliexpress', 'fiverr', 'direct'].includes(id)) renderPlatformList(id);
+            if (['amazon', 'aliexpress', 'fiverr', 'direct', 'push-to-live'].includes(id)) renderPlatformList(id);
             if (id === 'categories') refreshPlatformFiltersUI();
+        }
+
+        function generateDeploymentCode(btn) {
+            const data = {
+                products: JSON.parse(localStorage.getItem('products') || '[]'),
+                categories: JSON.parse(localStorage.getItem('categories') || '[]'),
+                site_settings: JSON.parse(localStorage.getItem('site_settings') || '{}'),
+                loc_settings: JSON.parse(localStorage.getItem('loc_settings') || '{}'),
+                blogs: JSON.parse(localStorage.getItem('blogs') || '[]'),
+                export_date: new Date().toISOString()
+            };
+
+            const payload = `---DEPLOYMENT_CODE_START---\n${JSON.stringify(data, null, 2)}\n---DEPLOYMENT_CODE_END---`;
+            const area = document.getElementById('deployment-code-area');
+            area.value = payload;
+            
+            // Visual feedback
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check"></i> Code Generated!';
+            setTimeout(() => { btn.innerHTML = originalHtml; if (window.lucide) lucide.createIcons(); }, 2000);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function copyToClipboard(btn) {
+            const area = document.getElementById('deployment-code-area');
+            if (!area.value) {
+                alert('Please generate code first!');
+                return;
+            }
+            area.select();
+            document.execCommand('copy');
+            
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check-circle"></i> Copied!';
+            setTimeout(() => { btn.innerHTML = originalHtml; if (window.lucide) lucide.createIcons(); }, 2000);
+            if (window.lucide) lucide.createIcons();
         }
 
         function loadLocSettings() {
