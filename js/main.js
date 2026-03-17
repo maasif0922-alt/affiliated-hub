@@ -822,8 +822,11 @@ function renderPlatformProducts(platform, gridId, limit = null, filters = {}) {
 // --- Data Management ---
 
 function loadSampleData() {
-    const existing = localStorage.getItem('products');
+    const isInitialized = localStorage.getItem('app_initialized');
     
+    // If already initialized once, don't re-inject hardcoded samples
+    if (isInitialized) return;
+
     const sampleProducts = [
         {
             id: 'p-1710634285812',
@@ -894,23 +897,18 @@ function loadSampleData() {
         }
     ];
 
-    if (!existing) {
+    // Only load these if products are empty or it's the very first run
+    const existing = localStorage.getItem('products');
+    if (!existing || JSON.parse(existing).length === 0) {
         localStorage.setItem('products', JSON.stringify(sampleProducts));
-    } else {
-        const currentProducts = JSON.parse(existing);
-        const currentIds = currentProducts.map(p => p.id);
-        let changed = false;
-        sampleProducts.forEach(sp => {
-            if (!currentIds.includes(sp.id)) {
-                currentProducts.push(sp);
-                changed = true;
-            }
-        });
-        if (changed) {
-            localStorage.setItem('products', JSON.stringify(currentProducts));
-        }
+        // Push initial products to cloud if configured
+        pushToCloud('products', sampleProducts);
     }
+    
+    // Mark as initialized so we don't interfere again
+    localStorage.setItem('app_initialized', 'true');
 }
+
 
 // --- Platform Menu Dropdown Logic ---
 
