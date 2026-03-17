@@ -9,12 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initApp() {
     
-    // Force clear old local storage cache (v2.1)
-    if (localStorage.getItem('app_version') !== '2.1') {
-        localStorage.removeItem('cloud_config'); // Clear potentially wrong user-entered Firebase configs
-        localStorage.removeItem('app_initialized');
-        localStorage.setItem('app_version', '2.1');
-    }
+    // Global Data Sync from js/config.js
+    syncFromConfig();
 
     trackPageView(); // Analytics
     renderNavbar();
@@ -23,6 +19,31 @@ function initApp() {
     applySiteSettings();
     updateCartBadge();
     initScrollReveal();
+}
+
+/**
+ * Synchronizes local storage with the hardcoded CONFIG in js/config.js
+ * This ensures that "Push to Live" changes are applied to all users.
+ */
+function syncFromConfig() {
+    if (typeof CONFIG === 'undefined') return;
+
+    // Check version or force sync if needed
+    const lastSync = localStorage.getItem('last_config_sync');
+    const currentSync = CONFIG.timestamp || Date.now(); // We can add a timestamp to config later
+
+    // For now, let's always sync if CONFIG exists to ensure deployment works
+    if (CONFIG.products) {
+        localStorage.setItem('products', JSON.stringify(CONFIG.products));
+    }
+    if (CONFIG.platform_filters) {
+        localStorage.setItem('platform_filters', JSON.stringify(CONFIG.platform_filters));
+    }
+    if (CONFIG.site_settings) {
+        localStorage.setItem('site_settings', JSON.stringify(CONFIG.site_settings));
+    }
+
+    localStorage.setItem('last_config_sync', currentSync);
 }
 
 // --- Firebase Cloud Sync ---

@@ -3,6 +3,7 @@
 <head><title>Data Injector</title></head>
 <body>
     <h1>Injecting Data to Cloud...</h1>
+    <script src="js/config.js"></script>
     <script src="js/main.js?v=4"></script>
     <script>
         fetch('temp-data.json')
@@ -26,6 +27,7 @@
                     if(typeof pushToCloud === 'function') {
                         setTimeout(() => {
                            pushToCloud('products', existingProducts);
+                        }, 500);
                     } else {
                         document.body.innerHTML += '<p style="color:red">pushToCloud function not found in main.js</p>';
                     }
