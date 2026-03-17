@@ -720,7 +720,6 @@ function renderPlatformProducts(platform, gridId, limit = null, filters = {}) {
 
 function loadSampleData() {
     const existing = localStorage.getItem('products');
-    if (existing && JSON.parse(existing).length > 0) return;
     
     const sampleProducts = [
         {
@@ -764,12 +763,52 @@ function loadSampleData() {
             link: 'https://s.click.aliexpress.com/e/_DkXW8bZ',
             category: 'Coffee Gear',
             country: 'all'
+        },
+        {
+            id: 'fvr-2',
+            platform: 'fiverr',
+            title: 'Complete SEO Optimization for WordPress',
+            price: '$120.00',
+            rating: 4.9,
+            image: 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/140239169/original/e9f1f0e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8.jpg',
+            featured: true,
+            category: 'SEO',
+            link: 'https://go.fiverr.com/visit/?bta=your-id&ncp=2'
+        },
+        {
+            id: 'p-1773520452512',
+            platform: 'aliexpress',
+            title: 'Wireless Earbuds, Bluetooth 5.4 Headphones Bass Stereo, Ear Buds with Noise Cancelling Mic, LED Display in Ear Earphones Clear Calls, IP7 Waterproof Bluetooth Earbuds for Phones/Sports/Laptop, Black',
+            price: 'AED 89.00',
+            oldPrice: 'AED 199.00',
+            rating: 4.8,
+            image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=400&q=80',
+            featured: false,
+            deal: true,
+            link: '#',
+            category: 'Electronics',
+            country: 'all'
         }
     ];
 
-    
-    localStorage.setItem('products', JSON.stringify(sampleProducts));
+    if (!existing) {
+        localStorage.setItem('products', JSON.stringify(sampleProducts));
+    } else {
+        const currentProducts = JSON.parse(existing);
+        const currentIds = currentProducts.map(p => p.id);
+        let changed = false;
+        sampleProducts.forEach(sp => {
+            if (!currentIds.includes(sp.id)) {
+                currentProducts.push(sp);
+                changed = true;
+            }
+        });
+        if (changed) {
+            localStorage.setItem('products', JSON.stringify(currentProducts));
+        }
+    }
 }
+
 // --- Platform Menu Dropdown Logic ---
 
 function togglePlatformMenu(event) {
@@ -794,8 +833,28 @@ document.addEventListener('click', (e) => {
 // --- Platform-Specific Filter Management ---
 
 function getPlatformFilters() {
-    return JSON.parse(localStorage.getItem('platform_filters') || '{}');
+    const defaults = {
+        fiverr: {
+            categories: ["SEO", "Logo Design", "Digital Marketing", "Video Editing", "Writing"],
+            countries: { US: "United States", GB: "United Kingdom", PK: "Pakistan", IN: "India", AE: "United Arab Emirates" }
+        },
+        amazon: {
+            categories: ["Electronics", "Home", "Kitchen", "Beauty", "Sports"],
+            countries: { US: "Amazon US", GB: "Amazon UK", AE: "Amazon UAE", SA: "Amazon Saudi" }
+        },
+        aliexpress: {
+            categories: ["Electronics", "Gadgets", "Tools", "Coffee Gear", "Fashion"],
+            countries: { all: "Global Delivery" }
+        }
+    };
+    const filters = JSON.parse(localStorage.getItem('platform_filters') || 'null');
+    if (!filters) {
+        localStorage.setItem('platform_filters', JSON.stringify(defaults));
+        return defaults;
+    }
+    return filters;
 }
+
 
 function savePlatformFilters(filters) {
     localStorage.setItem('platform_filters', JSON.stringify(filters));
