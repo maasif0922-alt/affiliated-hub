@@ -894,10 +894,20 @@
             document.getElementById('rate-INR').value = settings.rates.INR;
         }
 
+        function toggleFeatured(id, featuredStatus, platform) {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) {
+                products[index].featured = featuredStatus;
+                localStorage.setItem('products', JSON.stringify(products));
+                pushToCloud('products', products); // Auto sync
+            }
+        }
+
         function renderPlatformList(platform) {
             const products = JSON.parse(localStorage.getItem('products') || '[]');
             const stats = JSON.parse(localStorage.getItem('click_stats') || '{}');
-            const filtered = products.filter(p => p.platform === platform);
+            let filtered = products.filter(p => p.platform === platform);
             
             const list = document.getElementById(`${platform}-product-list`);
             if (!list) {
@@ -905,6 +915,13 @@
                 return;
             }
             list.innerHTML = '';
+            
+            // Sort by newest first (descending ID date)
+            filtered.sort((a, b) => {
+                const idA = parseInt(a.id.replace('p-', '')) || 0;
+                const idB = parseInt(b.id.replace('p-', '')) || 0;
+                return idB - idA;
+            });
             
             filtered.forEach(p => {
                 const tr = document.createElement('tr');
