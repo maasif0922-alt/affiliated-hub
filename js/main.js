@@ -801,9 +801,13 @@ function savePlatformFilters(filters) {
 }
 
 function refreshPlatformFiltersUI() {
-    const platform = document.getElementById('manage-platform-select').value;
+    const platformSelect = document.getElementById('manage-platform-select');
+    if (!platformSelect) return;
+    
+    const platform = platformSelect.value;
     const filters = getPlatformFilters();
     const platformData = filters[platform] || { categories: [], countries: {} };
+
 
     // Update Categories Table
     const catList = document.getElementById('platform-category-list');
