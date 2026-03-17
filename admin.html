@@ -1577,12 +1577,46 @@
 
         function getPlatformFilters() {
             const defaults = {
-                amazon: { categories: ['Electronics', 'Home', 'Gadgets'], countries: { US: 'USA', UK: 'United Kingdom' } },
-                aliexpress: { categories: ['Fashion', 'Small Appliances', 'Beauty'], countries: { PK: 'Pakistan', US: 'USA' } },
-                fiverr: { categories: ['Logo Design', 'SEO', 'Voice Over'], countries: {} },
-                direct: { categories: ['Custom Item', 'Store Exclusives'], countries: { Global: 'International' } }
+                amazon: { 
+                    categories: ['Electronics', 'Home & Kitchen', 'Fashion', 'Beauty & Personal Care', 'Sports & Outdoors', 'Toys & Games', 'Books', 'Automotive', 'Gadgets'], 
+                    countries: { US: 'USA', UK: 'United Kingdom', AE: 'UAE', SA: 'Saudi Arabia' } 
+                },
+                aliexpress: { 
+                    categories: ['Consumer Electronics', 'Home Improvement', 'Jewelry & Accessories', 'Tools', 'Fashion', 'Beauty', 'Toys & Hobbies', 'Small Appliances'], 
+                    countries: { PK: 'Pakistan', US: 'USA', Global: 'Global' } 
+                },
+                fiverr: { 
+                    categories: ['Graphic Design', 'Logo Design', 'Digital Marketing', 'Writing & Translation', 'Video & Animation', 'SEO', 'Programming & Tech', 'Voice Over'], 
+                    countries: {} 
+                },
+                direct: { 
+                    categories: ['Exclusive Deals', 'Best Sellers', 'Custom Item', 'Store Exclusives'], 
+                    countries: { Global: 'International' } 
+                }
             };
-            return JSON.parse(localStorage.getItem('platform_filters') || JSON.stringify(defaults));
+            
+            let current = localStorage.getItem('platform_filters');
+            if (!current) {
+                localStorage.setItem('platform_filters', JSON.stringify(defaults));
+                return defaults;
+            }
+            
+            const parsed = JSON.parse(current);
+            // Ensure all platforms exist and have categories
+            let changed = false;
+            Object.keys(defaults).forEach(key => {
+                if (!parsed[key] || !parsed[key].categories || parsed[key].categories.length === 0) {
+                    parsed[key] = defaults[key];
+                    changed = true;
+                }
+            });
+            
+            if (changed) {
+                localStorage.setItem('platform_filters', JSON.stringify(parsed));
+                pushToCloud('platform_filters', parsed);
+            }
+            
+            return parsed;
         }
 
         function refreshPlatformFiltersUI() {
