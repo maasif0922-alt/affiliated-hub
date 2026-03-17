@@ -14,10 +14,113 @@ function initApp() {
     renderFooter();
     handleSearch();
     loadSampleData();
+    initFirebase();
     applySiteSettings();
     updateCartBadge();
     initScrollReveal();
 }
+
+// --- Firebase Cloud Sync ---
+let db;
+// Firebase Configuration Utility
+function getFirebaseConfig() {
+    const defaults = {
+        apiKey: "user-to-provide",
+        authDomain: "user-to-provide",
+        databaseURL: "https://affiliated-hub-default-rtdb.firebaseio.com",
+        projectId: "affiliated-hub",
+        storageBucket: "affiliated-hub.appspot.com",
+        messagingSenderId: "user-to-provide",
+        appId: "user-to-provide"
+    };
+    return JSON.parse(localStorage.getItem('cloud_config') || JSON.stringify(defaults));
+}
+
+function initFirebase() {
+    if (typeof firebase === 'undefined') {
+        console.warn("Firebase SDK not loaded");
+        return;
+    }
+    const config = getFirebaseConfig();
+    try {
+        // Only initialize if config is valid (not placeholder)
+        if (config.apiKey === 'user-to-provide') {
+             console.log("Cloud sync is ready but requires Firebase configuration in Admin Dashboard.");
+             return;
+        }
+        firebase.initializeApp(config);
+        db = firebase.database();
+        console.log("Firebase initialized successfully");
+        syncWithCloud();
+    } catch (e) {
+        console.warn("Firebase initialization error:", e);
+    }
+}
+
+
+function syncWithCloud() {
+    if (!db) return;
+    console.log("Checking for cloud updates...");
+    
+    // Sync Products
+    db.ref('products').on('value', (snapshot) => {
+        const cloudProducts = snapshot.val();
+        if (cloudProducts) {
+            const productsArray = Array.isArray(cloudProducts) ? cloudProducts : Object.values(cloudProducts);
+            const localProducts = JSON.parse(localStorage.getItem('products') || '[]');
+            const localIds = new Set(localProducts.map(p => p.id));
+            let changed = false;
+            productsArray.forEach(cp => {
+                if (!localIds.has(cp.id)) {
+                    localProducts.push(cp);
+                    changed = true;
+                }
+            });
+            if (changed) {
+                localStorage.setItem('products', JSON.stringify(localProducts));
+                console.log("Successfully synced " + productsArray.length + " products from cloud");
+                location.reload(); 
+            }
+        }
+    });
+
+    // Sync Site Settings
+    db.ref('site_settings').on('value', (snapshot) => {
+        const cloudSettings = snapshot.val();
+        if (cloudSettings) {
+             const localSettings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+             if (JSON.stringify(cloudSettings) !== JSON.stringify(localSettings)) {
+                 localStorage.setItem('site_settings', JSON.stringify(cloudSettings));
+                 console.log("Site settings updated from cloud");
+                 applySiteSettings();
+             }
+        }
+    });
+
+    // Sync Blogs
+    db.ref('blogs').on('value', (snapshot) => {
+        const cloudBlogs = snapshot.val();
+        if (cloudBlogs) {
+             const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+             if (JSON.stringify(cloudBlogs) !== JSON.stringify(localBlogs)) {
+                 localStorage.setItem('blogs', JSON.stringify(cloudBlogs));
+                 console.log("Blogs updated from cloud");
+                 if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
+             }
+        }
+    });
+}
+
+
+function pushToCloud(path, data) {
+    if (db) {
+        db.ref(path).set(data)
+          .then(() => console.log("Cloud sync successful: " + path))
+          .catch((err) => console.error("Cloud sync failed: ", err));
+    }
+}
+
+
 
 // --- Analytics & Tracking ---
 
