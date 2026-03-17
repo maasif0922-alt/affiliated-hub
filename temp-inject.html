@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><title>Data Injector</title></head>
+<body>
+    <h1>Injecting Data to Cloud...</h1>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        fetch('temp-data.json')
+            .then(res => res.json())
+            .then(newData => {
+                if(newData.products) {
+                    let existingProducts = JSON.parse(localStorage.getItem('products') || '[]');
+                    
+                    // Merge logic: If product ID exists, update it, else add it.
+                    newData.products.forEach(newP => {
+                        const index = existingProducts.findIndex(p => p.id === newP.id);
+                        if(index !== -1) {
+                            existingProducts[index] = newP;
+                        } else {
+                            existingProducts.push(newP);
+                        }
+                    });
+
+                    localStorage.setItem('products', JSON.stringify(existingProducts));
+                    
+                    // Push merged data to firebase immediately
+                    if(typeof pushToCloud === 'function') {
+                        setTimeout(() => {
+                           pushToCloud('products', existingProducts);
+                           document.body.innerHTML += '<p style="color:green">Successfully injected and pushed to Firebase!</p>';
+                        }, 1000); // Give firebase time to initialize
+                    } else {
+                        document.body.innerHTML += '<p style="color:red">pushToCloud function not found in main.js</p>';
+                    }
+                }
+            })
+            .catch(e => {
+                document.body.innerHTML += `<p style="color:red">Error: ${e.message}</p>`;
+                console.error(e);
+            });
+    </script>
+</body>
+</html>
