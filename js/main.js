@@ -9,11 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initApp() {
     console.log('Affiliate Website Initialized');
+    
+    // Force clear old local storage cache (v2.0)
+    if (localStorage.getItem('app_version') !== '2.0') {
+        localStorage.removeItem('products');
+        localStorage.removeItem('app_initialized');
+        localStorage.setItem('app_version', '2.0');
+        console.log('Legacy cache cleared');
+    }
+
     trackPageView(); // Analytics
     renderNavbar();
     renderFooter();
     handleSearch();
-    loadSampleData();
     initFirebase();
     applySiteSettings();
     updateCartBadge();
@@ -68,6 +76,16 @@ function initFirebase() {
 function syncWithCloud() {
     if (!db) return;
     console.log("Real-time cloud sync active...");
+    
+    // Visual Indicator for Sync
+    const updateSyncStatus = (active) => {
+        const dot = document.getElementById('sync-indicator');
+        if (dot) {
+            dot.style.background = active ? '#22c55e' : '#ef4444';
+            dot.title = active ? 'Real-time Sync Active' : 'Sync Disconnected';
+        }
+    };
+    updateSyncStatus(true);
     
     // Sync Products
     db.ref('products').on('value', (snapshot) => {
@@ -403,6 +421,7 @@ function renderNavbar() {
             <div class="nav-row-top" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <a href="index.html" class="logo">
                     <span class="logo-accent">Affiliate</span>Hub
+                    <span id="sync-indicator" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#94a3b8; margin-left:5px; vertical-align:middle;" title="Connecting..."></span>
                 </a>
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <div class="cart-nav-trigger" onclick="location.href='checkout.html'" style="width: 32px; height: 32px;">
