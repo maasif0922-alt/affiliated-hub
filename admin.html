@@ -1513,8 +1513,10 @@
                 settings.rates.INR = parseFloat(document.getElementById('rate-INR').value);
                 localStorage.setItem('loc_settings', JSON.stringify(settings));
                 alert('Exchange rates updated successfully!');
-            });
-                // Cloud Config Form
+                });
+            }
+
+            // Cloud Config Form
             const cloudForm = document.getElementById('cloud-config-form');
             if (cloudForm) {
                 cloudForm.addEventListener('submit', (e) => {
@@ -1532,8 +1534,7 @@
                     window.location.reload();
                 });
             }
-
-        }
+        });
 
         function loadCloudConfig() {
             const config = JSON.parse(localStorage.getItem('cloud_config') || '{}');
@@ -1550,9 +1551,6 @@
                     badge.style.color = '#166534';
                 }
             }
-        }
-
-
         }
 
         function deleteProduct(id, platform) {
