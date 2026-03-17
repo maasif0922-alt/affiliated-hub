@@ -365,6 +365,7 @@
                     <li><a onclick="showTab('categories')" id="tab-categories"><i data-lucide="tags"></i> Filter Manage</a></li>
                     <li><a onclick="showTab('blogs')" id="tab-blogs" style="color: #f59e0b"><i data-lucide="book-open"></i> Blogs</a></li>
                     <li><a onclick="showTab('localization')" id="tab-localization" style="color: #10b981"><i data-lucide="languages"></i> Localization</a></li>
+                    <li><a onclick="showTab('data-manage')" id="tab-data-manage" style="color: #6366f1"><i data-lucide="database"></i> Data Management</a></li>
                     <li><a onclick="showTab('settings')" id="tab-settings"><i data-lucide="settings"></i> Site Settings</a></li>
                     <li style="margin-top: 2rem;"><a onclick="logout()"><i data-lucide="log-out"></i> Logout</a></li>
                 </ul>
@@ -816,7 +817,62 @@
                 </div>
             </div>
 
+            <!-- TAB: DATA MANAGEMENT -->
+            <div id="content-data-manage" class="admin-tab-content animate-fade-in">
+                <header style="margin-bottom: 3rem;">
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Data Synchronization</h1>
+                    <p style="color: var(--text-muted);">Backup, Restore, and Sync your products across devices</p>
+                </header>
+                
+                <div class="admin-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="admin-card">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div style="background: #e0e7ff; color: #4338ca; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="download-cloud"></i>
+                            </div>
+                            <div>
+                                <h2 style="font-size: 1.25rem; font-weight: 700;">Export Data</h2>
+                                <p style="font-size: 0.85rem; color: #64748b;">Save your current products to a file</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-bottom: 2rem; color: #475569;">Exporting creates a JSON file containing all your products, categories, and settings. You can use this to move data to another device.</p>
+                        <button onclick="exportSiteData()" class="btn btn-primary" style="width: 100%;">
+                            <i data-lucide="file-json"></i> Export Products (JSON)
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div style="background: #fef3c7; color: #92400e; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="upload-cloud"></i>
+                            </div>
+                            <div>
+                                <h2 style="font-size: 1.25rem; font-weight: 700;">Import Data</h2>
+                                <p style="font-size: 0.85rem; color: #64748b;">Restore data from a backup file</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-bottom: 2rem; color: #475569;">Paste your exported JSON data here to restore your products. <strong style="color: #ef4444;">Warning: This will overwrite current data!</strong></p>
+                        <textarea id="import-data-json" rows="4" placeholder='Paste JSON here...' style="width: 100%; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: monospace; font-size: 0.8rem; margin-bottom: 1rem;"></textarea>
+                        <button onclick="importSiteData()" class="btn btn-outline" style="width: 100%; border-color: #f59e0b; color: #92400e;">
+                            <i data-lucide="refresh-cw"></i> Import & Sync Data
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-card" style="margin-top: 2rem; border-left: 4px solid #6366f1;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">How to Sync with Mobile?</h3>
+                    <ol style="margin-left: 1.5rem; font-size: 0.9rem; line-height: 1.6; color: #475569;">
+                        <li>Click <strong>Export Products</strong> on your PC.</li>
+                        <li>Copy the JSON text that appears in the box (or is downloaded).</li>
+                        <li>Open this Admin Panel on your <strong>Mobile</strong>.</li>
+                        <li>Go to <strong>Data Management</strong> and paste the text into the Import box.</li>
+                        <li>Click <strong>Import & Sync</strong>. Your mobile will now have all your PC products!</li>
+                    </ol>
+                </div>
+            </div>
+
             <!-- TAB: SETTINGS -->
+
             <div id="content-settings" class="admin-tab-content animate-fade-in">
                 <header style="margin-bottom: 3rem;">
                     <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Website Global Configuration</h1>
@@ -887,6 +943,7 @@
             if (id === 'categories') refreshPlatformFiltersUI();
             if (id === 'localization') loadLocSettings();
             if (id === 'blogs') renderAdminBlogList();
+            if (id === 'data-manage') { /* No specific init needed */ }
         }
 
         function loadLocSettings() {
@@ -1443,6 +1500,54 @@
         function toggleAdminSidebar() {
             const sb = document.querySelector('.sidebar');
             sb.classList.toggle('active');
+        }
+
+        // --- Data Synchronization Functions ---
+        function exportSiteData() {
+            const data = {
+                products: JSON.parse(localStorage.getItem('products') || '[]'),
+                categories: JSON.parse(localStorage.getItem('categories') || '[]'),
+                site_settings: JSON.parse(localStorage.getItem('site_settings') || '{}'),
+                loc_settings: JSON.parse(localStorage.getItem('loc_settings') || '{}'),
+                platform_filters: JSON.parse(localStorage.getItem('platform_filters') || '{}'),
+                blogs: JSON.parse(localStorage.getItem('blogs') || '[]')
+            };
+            
+            const json = JSON.stringify(data, null, 2);
+            document.getElementById('import-data-json').value = json;
+            
+            // Also offer as a download
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `affiliate_hub_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            alert('Data exported! The JSON has been copied into the text box below and a backup file has been downloaded.');
+        }
+
+        function importSiteData() {
+            const json = document.getElementById('import-data-json').value;
+            if (!json) return alert('Please paste JSON data first.');
+            
+            try {
+                const data = JSON.parse(json);
+                if (confirm('Importing this data will REPLACE all current products and settings on this device. PROCEED?')) {
+                    if (data.products) localStorage.setItem('products', JSON.stringify(data.products));
+                    if (data.categories) localStorage.setItem('categories', JSON.stringify(data.categories));
+                    if (data.site_settings) localStorage.setItem('site_settings', JSON.stringify(data.site_settings));
+                    if (data.loc_settings) localStorage.setItem('loc_settings', JSON.stringify(data.loc_settings));
+                    if (data.platform_filters) localStorage.setItem('platform_filters', JSON.stringify(data.platform_filters));
+                    if (data.blogs) localStorage.setItem('blogs', JSON.stringify(data.blogs));
+                    
+                    alert('Data imported and synced! The page will now reload.');
+                    window.location.reload();
+                }
+            } catch (e) {
+                alert('Invalid JSON format. Please make sure you copied the entire export text.');
+                console.error(e);
+            }
         }
 
         // --- Blog Management Functions ---

@@ -724,48 +724,49 @@ function loadSampleData() {
     
     const sampleProducts = [
         {
-            id: 'amz-1',
-            platform: 'amazon',
-            title: 'Wireless Noise Cancelling Earbuds',
-            price: '$89.00',
-            oldPrice: '$129.00',
-            rating: 4.8,
-            image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=400&q=80',
-            featured: true,
-            deal: true,
-            link: 'https://amazon.com',
-            category: 'Electronics',
-            country: 'PK'
-        },
-        {
-            id: 'amz-2',
-            platform: 'amazon',
-            title: 'Smart Watch with Heart-Rate Monitor',
-            price: '$45.00',
-            oldPrice: '$59.99',
-            rating: 4.5,
-            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80',
-            featured: false,
-            deal: false,
-            link: 'https://amazon.com',
-            category: 'Gadgets',
-            country: 'US'
-        },
-        {
-            id: 'ali-1',
+            id: 'p-1710634285812',
             platform: 'aliexpress',
-            title: 'Mechanical RGB Gaming Keyboard',
-            price: '$34.50',
-            oldPrice: '$49.99',
-            rating: 4.7,
-            image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=400&q=80',
+            title: 'Portable Electric Coffee Grinder, USB Rechargeable',
+            price: 'AED 278.99',
+            oldPrice: 'AED 786.92',
+            rating: 5.0,
+            image: 'https://ae01.alicdn.com/kf/H0009587440054d5b91b98f24a6828987V/Portable-Electric-Coffee-Grinder-USB-Rechargeable-Ceramic-Grinding-Core-Coffee-Beans-Grinder-Coffee-Machine-Home-Travel.jpg',
             featured: true,
             deal: true,
-            link: 'https://aliexpress.com',
-            category: 'PC Gaming',
+            link: 'https://s.click.aliexpress.com/e/_DkXW8bZ',
+            category: 'Coffee Gear',
+            country: 'all'
+        },
+        {
+            id: 'p-1710634285813',
+            platform: 'aliexpress',
+            title: 'MHW-3BOMBER Disposable Coffee Filter Paper',
+            price: 'AED 33.95',
+            oldPrice: 'AED 124.01',
+            rating: 5.0,
+            image: 'https://ae01.alicdn.com/kf/H76878b2089b048869c8e88698c88698cC.jpg',
+            featured: true,
+            deal: true,
+            link: 'https://s.click.aliexpress.com/e/_DkXW8bZ',
+            category: 'Coffee Gear',
+            country: 'all'
+        },
+        {
+            id: 'p-1710634285814',
+            platform: 'aliexpress',
+            title: 'IKAPE Wireless Bluetooth Portable Coffee',
+            price: 'AED 656.34',
+            oldPrice: 'AED 1,562.25',
+            rating: 5.0,
+            image: 'https://ae01.alicdn.com/kf/Sa8868c8868c8868c8868c8868c8868C.jpg',
+            featured: true,
+            deal: true,
+            link: 'https://s.click.aliexpress.com/e/_DkXW8bZ',
+            category: 'Coffee Gear',
             country: 'all'
         }
     ];
+
     
     localStorage.setItem('products', JSON.stringify(sampleProducts));
 }
