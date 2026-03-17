@@ -880,3 +880,56 @@ function deletePlatformCountry(platform, code) {
     }
     refreshPlatformFiltersUI();
 }
+
+/**
+ * Shared Product Logic
+ * @param {string} id - Product ID
+ * @param {string} title - Product Title
+ */
+function shareProduct(id, title) {
+    const shareUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, '/')}product-detail.html?id=${id}`;
+    const shareData = {
+        title: title || 'Check out this deal on AffiliateHub!',
+        text: `I found this amazing deal on AffiliateHub: ${title}`,
+        url: shareUrl
+    };
+
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => console.log('Product shared successfully'))
+            .catch((error) => console.log('Error sharing product:', error));
+    } else {
+        // Fallback: Copy to clipboard
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('Link copied to clipboard!', 'check-circle', '#4ade80');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            showToast('Failed to copy link.', 'alert-circle', '#ef4444');
+        });
+    }
+}
+
+/**
+ * Universal Toast Notification
+ */
+function showToast(message, icon, iconColor) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+        background: #1e293b; color: white; padding: 1rem 2rem; 
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);
+        z-index: 9999; animation: slideIn 0.3s ease; font-weight: 600;
+        display: flex; align-items: center; gap: 1rem; border: 1px solid ${iconColor || 'transparent'};
+    `;
+    toast.innerHTML = `<i data-lucide="${icon || 'info'}" style="color: ${iconColor || 'white'}"></i> ${message}`;
+    document.body.appendChild(toast);
+    if (window.lucide) lucide.createIcons();
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 20px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+

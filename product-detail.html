@@ -387,9 +387,10 @@
         function copyProductLink() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
-                alert('Link copied to clipboard!');
+                showToast('Link copied to clipboard!', 'check-circle', '#4ade80');
             });
         }
+
 
         function showError() {
             document.getElementById('product-content').style.display = 'none';

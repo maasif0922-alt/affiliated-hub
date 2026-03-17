@@ -773,21 +773,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cur = cleanNum(p.price);
                 const old = cleanNum(p.oldPrice);
                 const disc = old > cur ? Math.round((old - cur) / old * 100) : 0;
-                const card = document.createElement('a');
-                card.href = 'product-detail.html?id=' + p.id;
+                const card = document.createElement('div');
                 card.className = 'flash-card';
                 card.innerHTML = `
                     <div class="flash-img">
                         <img src="${p.image}" alt="${p.title}">
                         ${disc > 0 ? `<span class="flash-disc">-${disc}%</span>` : ''}
+                        <button class="share-btn-mini" onclick="shareProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')" title="Share Product" style="position: absolute; top: 0.5rem; right: 0.5rem; z-index: 10;">
+                            <i data-lucide="share-2" style="width: 14px;"></i>
+                        </button>
                     </div>
-                    <div class="flash-info">
-                        <div class="ftitle">${p.title}</div>
-                        <div class="fprice">${sym} ${(cur * rate).toFixed(2)}</div>
-                        ${old > 0 ? `<div class="foldprice">${sym} ${(old * rate).toFixed(2)}</div>` : ''}
-                    </div>`;
+                    <a href="product-detail.html?id=${p.id}" style="text-decoration: none; color: inherit;">
+                        <div class="flash-info">
+                            <div class="ftitle">${p.title}</div>
+                            <div class="fprice">${sym} ${(cur * rate).toFixed(2)}</div>
+                            ${old > 0 ? `<div class="foldprice">${sym} ${(old * rate).toFixed(2)}</div>` : ''}
+                        </div>
+                    </a>`;
                 flashContainer.appendChild(card);
             });
+
         }
     }
 
