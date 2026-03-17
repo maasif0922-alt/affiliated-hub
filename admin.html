@@ -817,20 +817,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            refreshData();
-            refreshPlatformFiltersUI();
-            loadSettingsIntoForm();
-            loadCloudConfig(); // Added
-            setupFormHandlers();
-            
-            setTimeout(() => {
-                const badge = document.getElementById('cloud-status-badge');
-                if (badge && typeof db !== 'undefined' && db) {
-                    badge.innerText = 'Sync Active (Project: affiliate-20892)';
-                    badge.style.background = '#dcfce7';
-                    badge.style.color = '#166534';
-                }
-            }, 2000);
+            try { refreshData(); } catch(e) { console.warn('refreshData error', e); }
+            try { refreshPlatformFiltersUI(); } catch(e) { console.warn('filters UI error', e); }
+            try { loadSettingsIntoForm(); } catch(e) { console.warn('settings form error', e); }
+            try { setupFormHandlers(); } catch(e) { console.warn('form handlers error', e); }
         });
 
 
@@ -1419,20 +1409,7 @@
         }
 
         function loadCloudConfig() {
-            const config = JSON.parse(localStorage.getItem('cloud_config') || '{}');
-            if (config.apiKey && config.apiKey !== 'user-to-provide') {
-                document.getElementById('cloud-api-key').value = config.apiKey;
-                document.getElementById('cloud-db-url').value = config.databaseURL;
-                document.getElementById('cloud-project-id').value = config.projectId;
-                document.getElementById('cloud-app-id').value = config.appId;
-                
-                const badge = document.getElementById('cloud-status-badge');
-                if (badge) {
-                    badge.innerText = 'Connected & Active';
-                    badge.style.background = '#dcfce7';
-                    badge.style.color = '#166534';
-                }
-            }
+            // Deprecated: Firebase configuration removed.
         }
 
         function deleteProduct(id, platform) {
