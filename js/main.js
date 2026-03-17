@@ -24,16 +24,24 @@ function initApp() {
 let db;
 // Firebase Configuration Utility
 function getFirebaseConfig() {
-    const defaults = {
-        apiKey: "user-to-provide",
-        authDomain: "user-to-provide",
-        databaseURL: "https://affiliated-hub-default-rtdb.firebaseio.com",
-        projectId: "affiliated-hub",
-        storageBucket: "affiliated-hub.appspot.com",
-        messagingSenderId: "user-to-provide",
-        appId: "user-to-provide"
+    const config = {
+        apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
+        authDomain: "affiliate-20892.firebaseapp.com",
+        projectId: "affiliate-20892",
+        databaseURL: "https://affiliate-20892-default-rtdb.firebaseio.com",
+        storageBucket: "affiliate-20892.firebasestorage.app",
+        messagingSenderId: "317391475879",
+        appId: "1:317391475879:web:43d338e8fe09ba46caf782",
+        measurementId: "G-8BM90L12CS"
     };
-    return JSON.parse(localStorage.getItem('cloud_config') || JSON.stringify(defaults));
+    
+    // Check if admin dashboard has a local override or use global config
+    const localOverride = JSON.parse(localStorage.getItem('cloud_config') || 'null');
+    if (localOverride && localOverride.apiKey && localOverride.apiKey !== 'user-to-provide' && localOverride.apiKey !== config.apiKey) {
+        return localOverride;
+    }
+    
+    return config;
 }
 
 function initFirebase() {
@@ -43,9 +51,8 @@ function initFirebase() {
     }
     const config = getFirebaseConfig();
     try {
-        // Only initialize if config is valid (not placeholder)
-        if (config.apiKey === 'user-to-provide') {
-             console.log("Cloud sync is ready but requires Firebase configuration in Admin Dashboard.");
+        if (!config.apiKey || config.apiKey === 'user-to-provide') {
+             console.log("Cloud sync is ready but requires Firebase configuration.");
              return;
         }
         firebase.initializeApp(config);
