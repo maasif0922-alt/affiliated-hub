@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
     console.log('Affiliate Website Initialized');
     
-    // Force clear old local storage cache (v2.0)
-    if (localStorage.getItem('app_version') !== '2.0') {
-        localStorage.removeItem('products');
+    // Force clear old local storage cache (v2.1)
+    if (localStorage.getItem('app_version') !== '2.1') {
+        localStorage.removeItem('cloud_config'); // Clear potentially wrong user-entered Firebase configs
         localStorage.removeItem('app_initialized');
-        localStorage.setItem('app_version', '2.0');
-        console.log('Legacy cache cleared');
+        localStorage.setItem('app_version', '2.1');
+        console.log('Legacy config and cache cleared');
     }
 
     trackPageView(); // Analytics
@@ -43,12 +43,7 @@ function getFirebaseConfig() {
         measurementId: "G-8BM90L12CS"
     };
     
-    // Check if admin dashboard has a local override or use global config
-    const localOverride = JSON.parse(localStorage.getItem('cloud_config') || 'null');
-    if (localOverride && localOverride.apiKey && localOverride.apiKey !== 'user-to-provide' && localOverride.apiKey !== config.apiKey) {
-        return localOverride;
-    }
-    
+    // Hardcoded production config - prioritize this over old localStorage overrides
     return config;
 }
 

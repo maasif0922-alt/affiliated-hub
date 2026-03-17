@@ -960,7 +960,7 @@
         </main>
     </div>
 
-    <script src="js/main.js?v=3"></script>
+    <script src="js/main.js?v=4"></script>
     <script>
         // Auth Guard
         if (sessionStorage.getItem('admin_auth') !== 'true') {
@@ -973,6 +973,16 @@
             loadSettingsIntoForm();
             loadCloudConfig(); // Added
             setupFormHandlers();
+            
+            // Check Firebase status from main.js
+            setTimeout(() => {
+                const badge = document.getElementById('cloud-status-badge');
+                if (badge && typeof db !== 'undefined' && db) {
+                    badge.innerText = 'Sync Active (Project: affiliate-20892)';
+                    badge.style.background = '#dcfce7';
+                    badge.style.color = '#166534';
+                }
+            }, 2000);
         });
 
 
