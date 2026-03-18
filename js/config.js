@@ -1,5 +1,5 @@
 const CONFIG = {
-  "VERSION": "1.1.4-20260318-1750",
+  "VERSION": "1.1.5-20260318-1800",
   "products": [
     {
       "category": "Logo Design",
@@ -99,70 +99,43 @@ const CONFIG = {
   ],
   "platform_filters": {
     "fiverr": {
-      "categories": [
-        "Logo Design",
-        "SEO",
-        "Video Editing",
-        "Web Development",
-        "Graphic Design"
-      ],
-      "countries": {
-        "ALL": "Worldwide",
-        "US": "United States",
-        "UK": "United Kingdom"
-      }
+      "categories": ["Graphic Design", "Logo Design", "Digital Marketing", "Writing & Translation", "Video & Animation", "SEO", "Programming & Tech", "Voice Over"],
+      "countries": {}
     },
     "amazon": {
-      "categories": [
-        "Electronics",
-        "Beauty",
-        "Home & Kitchen",
-        "Fashion",
-        "Sports & Outdoors",
-        "Toys & Games",
-        "Books",
-        "Automotive",
-        "Gadgets"
-      ],
-      "countries": {
-        "US": "USA (Amazon.com)",
-        "UK": "UK (Amazon.co.uk)",
-        "AE": "UAE",
-        "SA": "Saudi Arabia"
-      }
+      "categories": ["Electronics", "Home & Kitchen", "Fashion", "Beauty & Personal Care", "Sports & Outdoors", "Toys & Games", "Books", "Automotive", "Gadgets"],
+      "countries": { "US": "USA", "UK": "United Kingdom", "AE": "UAE", "SA": "Saudi Arabia" }
     },
     "aliexpress": {
-      "categories": [
-        "Consumer Electronics",
-        "Home Improvement",
-        "Jewelry & Accessories",
-        "Tools",
-        "Fashion",
-        "Beauty",
-        "Toys & Hobbies",
-        "Small Appliances"
-      ],
-      "countries": {
-        "PK": "Pakistan",
-        "US": "USA",
-        "Global": "Global"
-      }
+      "categories": ["Consumer Electronics", "Home Improvement", "Jewelry & Accessories", "Tools", "Fashion", "Beauty", "Toys & Hobbies", "Small Appliances"],
+      "countries": { "PK": "Pakistan", "US": "USA", "Global": "Global" }
     },
     "direct": {
-      "categories": [
-        "Exclusive Deals",
-        "Best Sellers",
-        "Custom Item",
-        "Store Exclusives"
-      ],
-      "countries": {
-        "Global": "International"
-      }
+      "categories": ["Exclusive Deals", "Best Sellers", "Custom Item", "Store Exclusives"],
+      "countries": { "Global": "International" }
     }
   },
   "site_settings": {
-    "site_name": "Affiliate Hub",
-    "contact_email": "support@affiliatehub.com",
-    "currency": "USD"
-  }
+    "logoText": "Affiliate",
+    "logoAccent": "Hub",
+    "heroTitle": "Elevate Your Shopping with Expert Picks",
+    "heroDesc": "We source the best deals from Amazon, trendy products from AliExpress, and premium services from Fiverr. All in one beautifully curated hub.",
+    "primaryColor": "#6366f1"
+  },
+  "loc_settings": {
+    "currency": "USD",
+    "language": "en",
+    "rates": { "USD": 1, "AED": 3.67, "SAR": 3.75, "PKR": 280, "INR": 83 },
+    "symbols": { "USD": "$", "AED": "AED", "SAR": "SAR", "PKR": "Rs", "INR": "₹" }
+  },
+  "blogs": [
+    {
+      "id": "blog-1",
+      "title": "How to Choose the Best Tech Deals",
+      "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+      "excerpt": "Finding the right balance between price and quality is an art. Here is how we do it...",
+      "link": "#",
+      "date": "2026-03-14T19:27:12.140Z"
+    }
+  ]
 };
