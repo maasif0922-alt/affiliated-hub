@@ -797,9 +797,14 @@
                     </header>
 
                     <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                        <button onclick="generateDeploymentCode(this)" class="btn" style="background: #22c55e; color: #000; font-weight: 800; padding: 1rem 2rem; border: none; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem; transition: transform 0.2s;">
-                            <i data-lucide="zap"></i> Generate Deployment Code
-                        </button>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; width: 100%;">
+                            <button class="btn btn-primary" onclick="generateDeploymentCode(this)" style="flex: 1; padding: 1.25rem;">
+                                <i data-lucide="zap"></i> Generate Deployment Code
+                            </button>
+                            <button class="btn" onclick="syncFromLiveNow(this)" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; padding: 1rem;">
+                                <i data-lucide="refresh-cw"></i> Sync from Live
+                            </button>
+                        </div>
                         <button onclick="copyToClipboard(this)" class="btn" style="background: transparent; color: white; border: 2px solid #334155; font-weight: 600; padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
                             <i data-lucide="copy"></i> Copy to Clipboard
                         </button>
@@ -865,6 +870,29 @@
             btn.innerHTML = '<i data-lucide="check"></i> Code Generated!';
             setTimeout(() => { btn.innerHTML = originalHtml; if (window.lucide) lucide.createIcons(); }, 2000);
             if (window.lucide) lucide.createIcons();
+        }
+
+        function syncFromLiveNow(btn) {
+            if (!confirm('This will overwrite your local changes with the latest Live data from the server. Proceed?')) return;
+            
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="refresh-cw" class="animate-spin"></i> Syncing...';
+            
+            setTimeout(() => {
+                if (typeof CONFIG !== 'undefined') {
+                    if (CONFIG.products) localStorage.setItem('products', JSON.stringify(CONFIG.products));
+                    if (CONFIG.platform_filters) localStorage.setItem('platform_filters', JSON.stringify(CONFIG.platform_filters));
+                    if (CONFIG.site_settings) localStorage.setItem('site_settings', JSON.stringify(CONFIG.site_settings));
+                    localStorage.setItem('config_version', CONFIG.VERSION || '1.0.0');
+                    
+                    alert('Sync complete! Your dashboard is now up to date with the Live version.');
+                    location.reload();
+                } else {
+                    alert('Error: LIVE config not found. Please refresh the page.');
+                }
+                btn.innerHTML = originalHtml;
+                if (window.lucide) lucide.createIcons();
+            }, 800);
         }
 
         function copyToClipboard(btn) {

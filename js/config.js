@@ -1,5 +1,5 @@
 const CONFIG = {
-  "VERSION": "1.1.3-20260318-1730",
+  "VERSION": "1.1.4-20260318-1750",
   "products": [
     {
       "category": "Logo Design",
@@ -83,6 +83,18 @@ const CONFIG = {
       "platform": "amazon",
       "price": "$89.99",
       "rating": 4.5
+    },
+    {
+      "id": "p-aliexpress-test-1",
+      "title": "Example AliExpress Tech Gadget",
+      "image": "https://picsum.photos/seed/aliexpress/400",
+      "images": ["https://picsum.photos/seed/aliexpress/400"],
+      "category": "Consumer Electronics",
+      "featured": false,
+      "link": "https://aliexpress.com",
+      "platform": "aliexpress",
+      "price": "$25.00",
+      "rating": 4.8
     }
   ],
   "platform_filters": {

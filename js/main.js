@@ -34,6 +34,12 @@ function syncFromConfig() {
 
     // If version is different, force a full refresh of local storage
     if (lastSyncVersion !== currentVersion) {
+        // Skip automatic overwrite if we are on the admin page to prevent data loss during editing
+        if (window.location.pathname.includes('admin.html')) {
+            console.log('New config version available. Auto-sync skipped on Admin page to protect local edits.');
+            return;
+        }
+        
         console.log('New config version detected. Syncing...');
         if (CONFIG.products) {
             localStorage.setItem('products', JSON.stringify(CONFIG.products));
