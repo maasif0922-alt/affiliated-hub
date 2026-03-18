@@ -1,138 +1,14 @@
 const CONFIG = {
-  "VERSION": "1.1.5-20260318-1800",
+  "VERSION": "1.1.7-20260318-1850",
   "products": [
     {
-      "category": "Logo Design",
-      "featured": false,
-      "id": "fvr-1",
-      "image": "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/116239169/original/e9f1f0e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8.jpg",
-      "link": "https://go.fiverr.com/visit/?bta=your-id&ncp=1",
-      "platform": "fiverr",
-      "price": "From $50",
-      "rating": 5,
-      "title": "Professional Logo Design & Brand Identity"
-    },
-    {
-      "category": "SEO",
-      "featured": true,
-      "id": "fvr-2",
-      "image": "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/140239169/original/e9f1f0e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8/gigs/140239169/original/e9f1f0e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8.jpg",
-      "link": "https://go.fiverr.com/visit/?bta=your-id&ncp=2",
-      "platform": "fiverr",
-      "price": "From $120",
-      "rating": 4.9,
-      "title": "Complete SEO Optimization for WordPress"
-    },
-    {
-      "category": "Video Editing",
-      "featured": false,
-      "id": "fvr-3",
-      "image": "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/150239169/original/e9f1f0e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8f8e8.jpg",
-      "link": "https://go.fiverr.com/visit/?bta=your-id&ncp=3",
-      "platform": "fiverr",
-      "price": "From $75",
-      "rating": 5,
-      "title": "Advanced Video Editing for YouTube"
-    },
-    {
-      "category": "Electronics",
-      "deal": false,
-      "featured": true,
-      "id": "p-1773514551272",
-      "image": "https://picsum.photos/401",
-      "images": ["https://picsum.photos/401"],
-      "link": "https://amazon.com",
-      "platform": "amazon",
-      "price": "$ 19.99",
-      "priceCurrency": "USD",
-      "rating": 5,
-      "title": "Test Product New"
-    },
-    {
-      "id": "p-1773790256794",
+      "id": "p-1773841588617",
       "title": "TruSkin Vitamin C Serum for Face – Anti Aging Face Serum with Hyaluronic Acid & Vitamin E – Brightening Formula for Improving Appearance of Dark Spots, Fine Lines & Wrinkles – All Skin Types, 1 fl oz",
-      "image": "https://m.media-amazon.com/images/I/71aHSRZMJTL._SL1500_.jpg",
-      "images": ["https://m.media-amazon.com/images/I/71aHSRZMJTL._SL1500_.jpg"],
-      "category": "Beauty",
-      "featured": true,
-      "link": "https://amzn.to/3Z5rMId",
-      "platform": "amazon",
-      "price": "$15.00",
-      "rating": 4.5
-    },
-    {
-      "id": "p-1773791068053",
-      "title": "asif",
-      "image": "https://picsum.photos/seed/asif/400",
-      "images": ["https://picsum.photos/seed/asif/400"],
-      "category": "Beauty",
-      "featured": true,
-      "link": "https://amzn.to/3Z5rMId",
-      "platform": "amazon",
-      "price": "$15.00",
-      "rating": 4.5
-    },
-    {
-      "id": "p-1773792283512",
-      "title": "IKAPE Portable Bluetooth Wireless Electric Espresso Machine, Coffee machines suitable for beginners 51/58mm Espresso Portafilter",
-      "image": "https://m.media-amazon.com/images/I/71sMx9LJPPL._SL1500_.jpg",
-      "images": ["https://m.media-amazon.com/images/I/71sMx9LJPPL._SL1500_.jpg"],
-      "category": "Home & Kitchen",
-      "featured": true,
-      "link": "https://amzn.to/3Z5rMId",
-      "platform": "amazon",
-      "price": "$89.99",
-      "rating": 4.5
-    },
-    {
-      "id": "p-aliexpress-test-1",
-      "title": "Example AliExpress Tech Gadget",
-      "image": "https://picsum.photos/seed/aliexpress/400",
-      "images": ["https://picsum.photos/seed/aliexpress/400"],
-      "category": "Consumer Electronics",
-      "featured": false,
-      "link": "https://aliexpress.com",
-      "platform": "aliexpress",
-      "price": "$25.00",
-      "rating": 4.8
-    }
-  ],
-  "platform_filters": {
-    "fiverr": {
-      "categories": ["Graphic Design", "Logo Design", "Digital Marketing", "Writing & Translation", "Video & Animation", "SEO", "Programming & Tech", "Voice Over"],
-      "countries": {}
-    },
-    "amazon": {
-      "categories": ["Electronics", "Home & Kitchen", "Fashion", "Beauty & Personal Care", "Sports & Outdoors", "Toys & Games", "Books", "Automotive", "Gadgets"],
-      "countries": { "US": "USA", "UK": "United Kingdom", "AE": "UAE", "SA": "Saudi Arabia" }
-    },
-    "aliexpress": {
-      "categories": ["Consumer Electronics", "Home Improvement", "Jewelry & Accessories", "Tools", "Fashion", "Beauty", "Toys & Hobbies", "Small Appliances"],
-      "countries": { "PK": "Pakistan", "US": "USA", "Global": "Global" }
-    },
-    "direct": {
-      "categories": ["Exclusive Deals", "Best Sellers", "Custom Item", "Store Exclusives"],
-      "countries": { "Global": "International" }
-    }
-  },
-  "site_settings": {
-    "logoText": "Affiliate",
-    "logoAccent": "Hub",
-    "heroTitle": "Elevate Your Shopping with Expert Picks",
-    "heroDesc": "We source the best deals from Amazon, trendy products from AliExpress, and premium services from Fiverr. All in one beautifully curated hub.",
-    "primaryColor": "#6366f1"
-  },
-  "loc_settings": {
-    "currency": "USD",
-    "language": "en",
-    "rates": { "USD": 1, "AED": 3.67, "SAR": 3.75, "PKR": 280, "INR": 83 },
-    "symbols": { "USD": "$", "AED": "AED", "SAR": "SAR", "PKR": "Rs", "INR": "₹" }
-  },
-  "blogs": [
-    {
-      "id": "blog-1",
-      "title": "How to Choose the Best Tech Deals",
-      "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "data:image/jpeg;base64,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*
+<truncated 10072 bytes>
+      ],
+      "image": "data:image/jpeg;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAp0oAAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAu4AAAPoAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQUMAAAAABNjb2xybmNseAACAAIAAgAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAp1JtZGF0EgAKBxlmbt+cIAgyu84CEXABRRRRIIIA3Sv6fbvCMiuv/HTeZOEhfjWVGFYN7N6MxHCO3VyMVfpLj5J5j+Nl4y/TgZNfFA7M4+/i+QvJvr6hiNbDPyaqMAfP2FJ9wsiJX7U/Nek48QYduySLUtrC2WKu3JTKGZJKcoPm100xpG/4c6pyhluFzH74rl0pTNiE6GdX5DBtNVDDh+E+fg+xxEpoL4V3C5pSmGH1uDvpRUCn7+T86Sk62WbRbVg58hStLoo4ONhudRtZiK9lybjtyZB/hejV75hq/zRyvLTp4y35KBy0zy+onZZh69ar5Jb97+ywdm1hiBvcdlUqlJDieXfdnU3FbGvE/IbaZmF934QDfluAVhEUXpkB2w69YSNEotjra4K2jDTXsQYn41sSqUb0ByKaMBpiXrjDEmSj2jLZNuUFJRZYi18dWqTWXvQ/gT9+wdBZDe5hG7LDRHsW401Xu47lKrhcqd+HzMinG/kEi6AnAhHO9PPA+XHW6fvLZ03N3BkriQ6z5hVXVn+ihC1R+k5/AqAgD/49Cik2xlogvIIjerwpPMHNdfIeOks9GXGbUFfY1aLMpbIrMYI4NaUyteNEI5pVB/rHJyv2OjAIcMYDeF2s6IgZ0OpmCEVOzsHzffXxiPMpQbwoVBikwoE1qzQbeKSSAsctqs6+Uw7XUpzjdRHFvEeYJc3yneIwCX31vIfdLT+fiGvoj5OdAqDYPWvwJjjmtLQJov6ZuCTasac3j5Eov7Gsp7cJ2snfhy/dEU9oG3qi6DiSAcleOEK6q0/SESeKAHTvQVB9AG1pv39mJB7i8grL68ob+HKHp9cpNazzmTtf8KRZopH62GoonjYfDd7vLNP2mKG6BKfGIH7zyBVN8HKt5wdvdNUIJRKtb+CX9ZXmgJSnXzcceWh8zeqa/3ePWy7lx/bY8r/PYaWP3u8G28QoaCi5SLLrzbAaEx8AHEBcFDrB5/CFZ3xX2ejxDQnJuH3ykY8D5ZXD/hO2PAwhcr+btb2SF7hYEcSVmzIfyRyrRstraXsYA2ROtM3PyQ<truncated 10072 bytes>389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
       "excerpt": "Finding the right balance between price and quality is an art. Here is how we do it...",
       "link": "#",
       "date": "2026-03-14T19:27:12.140Z"
