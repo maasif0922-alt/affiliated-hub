@@ -798,11 +798,11 @@
 
                     <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
                         <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; width: 100%;">
-                            <button class="btn btn-primary" onclick="generateDeploymentCode(this)" style="flex: 1; padding: 1.25rem;">
-                                <i data-lucide="zap"></i> Generate Deployment Code
+                            <button class="btn btn-primary" onclick="generateDeploymentCode(this)" style="flex: 2; padding: 1.25rem;">
+                                <i data-lucide="zap"></i> Ready to Push Live (Generate Code)
                             </button>
-                            <button class="btn" onclick="syncFromLiveNow(this)" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; padding: 1rem;">
-                                <i data-lucide="refresh-cw"></i> Sync from Live
+                            <button class="btn" onclick="syncFromLiveNow(this)" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 1rem; flex: 1;">
+                                <i data-lucide="refresh-cw"></i> RESET Dashboard (Sync from Website)
                             </button>
                         </div>
                         <button onclick="copyToClipboard(this)" class="btn" style="background: transparent; color: white; border: 2px solid #334155; font-weight: 600; padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
@@ -877,7 +877,7 @@
         }
 
         function syncFromLiveNow(btn) {
-            if (!confirm('This will overwrite your local changes with the latest Live data from the server. Proceed?')) return;
+            if (!confirm('DANGER: This will PERMANENTLY DELETE all your current unsaved dashboard edits and replace them with the website\'s official live data. Are you absolutely sure?')) return;
             
             const originalHtml = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="refresh-cw" class="animate-spin"></i> Syncing...';
