@@ -7,59 +7,91 @@ document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
-function initApp() {
-    
-    // Global Data Sync from js/config.js
-    syncFromConfig();
-
-    trackPageView(); // Analytics
-    renderNavbar();
-    renderFooter();
-    handleSearch();
-    applySiteSettings();
-    updateCartBadge();
-    initScrollReveal();
-}
-
 /**
- * Synchronizes local storage with the hardcoded CONFIG in js/config.js
- * This ensures that "Push to Live" changes are applied to all users.
+ * Firebase Real-time Configuration & Initialization
  */
-function syncFromConfig() {
-    if (typeof CONFIG === 'undefined') return;
+let db;
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
+    authDomain: "affiliate-20892.firebaseapp.com",
+    projectId: "affiliate-20892",
+    databaseURL: "https://affiliate-20892-default-rtdb.firebaseio.com",
+    storageBucket: "affiliate-20892.firebasestorage.app",
+    messagingSenderId: "317391475879",
+    appId: "1:317391475879:web:43d338e8fe09ba46caf782",
+    measurementId: "G-8BM90L12CS"
+};
 
-    // Check version to force sync
-    const lastSyncVersion = localStorage.getItem('config_version');
-    const currentVersion = CONFIG.VERSION || '1.0.0';
-
-    // If version is different, force a full refresh of local storage
-    if (lastSyncVersion !== currentVersion) {
-        // Skip automatic overwrite if we are on the admin page OR in admin mode to prevent data loss
-        if (window.location.pathname.includes('admin.html') || localStorage.getItem('admin_mode') === 'true') {
-            console.log('New config version available. Auto-sync skipped to protect administrator edits.');
-            return;
+function initFirebase() {
+    if (typeof firebase === 'undefined') {
+        console.warn("Firebase SDK not loaded. Real-time sync disabled.");
+        return;
+    }
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(FIREBASE_CONFIG);
         }
-        
-        console.log('New config version detected. Syncing...');
-        if (CONFIG.products) {
-            localStorage.setItem('products', JSON.stringify(CONFIG.products));
-        }
-        if (CONFIG.platform_filters) {
-            localStorage.setItem('platform_filters', JSON.stringify(CONFIG.platform_filters));
-        }
-        if (CONFIG.site_settings) {
-            localStorage.setItem('site_settings', JSON.stringify(CONFIG.site_settings));
-        }
-        localStorage.setItem('config_version', currentVersion);
-        localStorage.setItem('last_config_sync', Date.now());
-        
-        // Refresh UI if we are on a page that needs it
-        if (typeof updatePageUI === 'function') updatePageUI();
+        db = firebase.database();
+        console.log("Firebase Real-time Database initialized.");
+        startRealtimeSync();
+    } catch (e) {
+        console.error("Firebase Initialization Error:", e);
     }
 }
 
-// --- Firebase Cloud Sync ---
-// Removed as per user request. Application now relies purely on Local Storage and "Push to Live" mechanism.
+function startRealtimeSync() {
+    if (!db) return;
+    const syncIndicator = document.getElementById('sync-indicator');
+    if (syncIndicator) syncIndicator.style.background = '#22c55e'; // Green for online
+
+    // --- Sync Products ---
+    db.ref('products').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            const productsArray = Array.isArray(data) ? data : Object.values(data);
+            localStorage.setItem('products', JSON.stringify(productsArray));
+            console.log("Products synced from Firebase:", productsArray.length);
+            updatePageUI();
+        }
+    });
+
+    // --- Sync Site Settings ---
+    db.ref('site_settings').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            localStorage.setItem('site_settings', JSON.stringify(data));
+            console.log("Site settings synced from Firebase.");
+            applySiteSettings();
+        }
+    });
+
+    // --- Sync Categories & Filters ---
+    db.ref('categories').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) localStorage.setItem('categories', JSON.stringify(data));
+    });
+
+    db.ref('platform_filters').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) localStorage.setItem('platform_filters', JSON.stringify(data));
+    });
+
+    // --- Sync Localization ---
+    db.ref('loc_settings').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) localStorage.setItem('loc_settings', JSON.stringify(data));
+    });
+
+    // --- Sync Blogs ---
+    db.ref('blogs').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            localStorage.setItem('blogs', JSON.stringify(data));
+            if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
+            renderBlogs();
+        }
+    });
+}
 
 function updatePageUI() {
     // Check for common grid IDs and re-render them
@@ -137,9 +169,25 @@ function updatePageUI() {
 }
 
 
+function initApp() {
+    initFirebase();
+    trackPageView(); // Analytics
+    renderNavbar();
+    renderFooter();
+    handleSearch();
+    applySiteSettings();
+    updateCartBadge();
+    initScrollReveal();
+}
+
 function pushToCloud(path, data) {
-    // Firebase removed as per user request. 
-    // Data is only stored locally until "Push to Live" is used.
+    if (db) {
+        db.ref(path).set(data)
+            .then(() => console.log(`Cloud sync success: ${path}`))
+            .catch(err => console.error(`Cloud sync failed: ${path}`, err));
+    } else {
+        console.warn("Firebase not initialized. Data saved locally only.");
+    }
 }
 
 

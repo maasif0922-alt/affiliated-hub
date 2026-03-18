@@ -382,7 +382,10 @@
             <!-- TAB: DASHBOARD STATS -->
             <div id="content-dashboard" class="admin-tab-content active animate-fade-in">
                 <header style="margin-bottom: 3rem;">
-                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif">Admin Insights</h1>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+                    <span id="sync-indicator" style="width: 12px; height: 12px; background: #94a3b8; border-radius: 50%; display: inline-block;" title="Firebase Connection Status"></span>
+                    <h1 style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif; margin: 0;">Admin Insights</h1>
+                </div>
                     <p style="color: var(--text-muted);">Real-time performance metrics</p>
                 </header>
 
@@ -825,6 +828,10 @@
             </div>
         </main>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script src="js/config.js?v=1.1.9"></script>
     <script src="js/main.js?v=1.1.9"></script>
