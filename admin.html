@@ -832,6 +832,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Set admin_mode to prevent the home page from auto-syncing over our edits
+            localStorage.setItem('admin_mode', 'true');
+            
             try { refreshData(); } catch(e) { console.warn('refreshData error', e); }
             try { refreshPlatformFiltersUI(); } catch(e) { console.warn('filters UI error', e); }
             try { loadSettingsIntoForm(); } catch(e) { console.warn('settings form error', e); }
