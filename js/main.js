@@ -12,14 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 let db;
 const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDSNOcSA9yaB7DljP3Qe__Ajxts0MC-UDg",
-    authDomain: "affiliate-20892.firebaseapp.com",
-    projectId: "affiliate-20892",
-    databaseURL: "https://affiliate-20892-default-rtdb.firebaseio.com",
-    storageBucket: "affiliate-20892.firebasestorage.app",
-    messagingSenderId: "317391475879",
-    appId: "1:317391475879:web:43d338e8fe09ba46caf782",
-    measurementId: "G-8BM90L12CS"
+  apiKey: "AIzaSyBgpt_RCof3mehifLYeOj7Y4N1EKmn2n98",
+  authDomain: "affliated-hub-pro.firebaseapp.com",
+  projectId: "affliated-hub-pro",
+  storageBucket: "affliated-hub-pro.firebasestorage.app",
+  messagingSenderId: "284608197782",
+  appId: "1:284608197782:web:6bb2265ca02c41764d7eb7",
+  measurementId: "G-4SFZY78MP8"
 };
 
 function initFirebase() {
@@ -31,8 +30,8 @@ function initFirebase() {
         if (!firebase.apps.length) {
             firebase.initializeApp(FIREBASE_CONFIG);
         }
-        db = firebase.database();
-        console.log("Firebase Real-time Database initialized.");
+        db = firebase.firestore();
+        console.log("Firebase Firestore initialized.");
         startRealtimeSync();
     } catch (e) {
         console.error("Firebase Initialization Error:", e);
@@ -44,51 +43,72 @@ function startRealtimeSync() {
     const syncIndicator = document.getElementById('sync-indicator');
     if (syncIndicator) syncIndicator.style.background = '#22c55e'; // Green for online
 
+    const syncDoc = (docId, callback) => {
+        db.collection('appData').doc(docId).onSnapshot((doc) => {
+            if (doc.exists) {
+                callback(doc.data().value);
+            }
+        }, (error) => {
+            console.error("Error syncing " + docId + ":", error);
+        });
+    };
+
     // --- Sync Products ---
-    db.ref('products').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('products', (data) => {
         if (data) {
             const productsArray = Array.isArray(data) ? data : Object.values(data);
             localStorage.setItem('products', JSON.stringify(productsArray));
-            console.log("Products synced from Firebase:", productsArray.length);
+            console.log("Products synced from Firestore:", productsArray.length);
             updatePageUI();
         }
     });
 
     // --- Sync Site Settings ---
-    db.ref('site_settings').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('site_settings', (data) => {
         if (data) {
             localStorage.setItem('site_settings', JSON.stringify(data));
-            console.log("Site settings synced from Firebase.");
+            console.log("Site settings synced from Firestore.");
             applySiteSettings();
         }
     });
 
     // --- Sync Categories & Filters ---
-    db.ref('categories').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('categories', (data) => {
         if (data) localStorage.setItem('categories', JSON.stringify(data));
     });
 
-    db.ref('platform_filters').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('platform_filters', (data) => {
         if (data) localStorage.setItem('platform_filters', JSON.stringify(data));
     });
 
     // --- Sync Localization ---
-    db.ref('loc_settings').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('loc_settings', (data) => {
         if (data) localStorage.setItem('loc_settings', JSON.stringify(data));
     });
 
     // --- Sync Blogs ---
-    db.ref('blogs').on('value', (snapshot) => {
-        const data = snapshot.val();
+    syncDoc('blogs', (data) => {
         if (data) {
             localStorage.setItem('blogs', JSON.stringify(data));
             if (typeof renderAdminBlogList === 'function') renderAdminBlogList();
             renderBlogs();
+        }
+    });
+
+    // --- Sync Users & Orders ---
+    syncDoc('users', (data) => {
+        if (data) {
+            localStorage.setItem('users', JSON.stringify(data));
+            if (typeof renderUserList === 'function') renderUserList();
+            if (typeof refreshData === 'function') refreshData();
+        }
+    });
+
+    syncDoc('orders', (data) => {
+        if (data) {
+            localStorage.setItem('orders', JSON.stringify(data));
+            if (typeof renderOrderList === 'function') renderOrderList();
+            if (typeof refreshData === 'function') refreshData();
         }
     });
 }
@@ -182,7 +202,7 @@ function initApp() {
 
 function pushToCloud(path, data) {
     if (db) {
-        db.ref(path).set(data)
+        db.collection('appData').doc(path).set({ value: data })
             .then(() => console.log(`Cloud sync success: ${path}`))
             .catch(err => console.error(`Cloud sync failed: ${path}`, err));
     } else {
@@ -588,6 +608,7 @@ function registerUser(userData) {
     };
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
+    pushToCloud('users', users);
     return { success: true };
 }
 
@@ -688,6 +709,7 @@ function submitOrder(orderData) {
     };
     orders.push(newOrder);
     localStorage.setItem('orders', JSON.stringify(orders));
+    pushToCloud('orders', orders);
     
     // Clear cart after successful order
     localStorage.removeItem('cart');
